@@ -402,7 +402,7 @@
 							<div id="one" class="tab-pane active">
 								<ul class="goods-intro unstyled">
 									<#list customAttributeList as c>
-                                        <li>${c.text}：${c.value}</li>
+                                        <li>${c.text!''}：${c.value!''}</li>
 									</#list>
 								</ul>
 								<div class="intro-detail">
