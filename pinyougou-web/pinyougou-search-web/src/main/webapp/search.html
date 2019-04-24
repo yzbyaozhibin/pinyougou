@@ -4,31 +4,27 @@
 	<head>
 		<meta charset="utf-8"/>
 		<title>品优购搜索</title>
-		<!-- 当前页面的请求地址的基准URL -->
-		<base href="/"/>
+		<base href="/">
 		<link rel="icon" href="assets/img/favicon.ico"/>
 		<link rel="stylesheet" type="text/css" href="/css/webbase.css"/>
 		<link rel="stylesheet" type="text/css" href="/css/pages-list.css"/>
 		<link rel="stylesheet" type="text/css" href="/css/widget-cartPanelView.css"/>
-
 		<script src="/plugins/angularjs/angular.min.js"></script>
 		<script src="/js/base.js"></script>
 		<script src="/js/service/baseService.js"></script>
 		<script src="/js/controller/searchController.js"></script>
-
+		<script src="/js/plugins/jquery/jquery.min.js"></script>
 		<script type="text/javascript">
-			// 指定页面位置提供者
-			app.config(function($locationProvider){
-			    // 指定页面的模式
-                $locationProvider.html5Mode(true);
-			});
+			app.config(function ($locationProvider) {
+				$locationProvider.html5Mode(true);
+            });
+            $(function () {
+                $("body").show();
+            });
 		</script>
-
 	</head>
 
-	<body ng-app="pinyougou"
-		  ng-controller="searchController"
-		  ng-init="getKeywords()">
+	<body ng-app="pinyougou" ng-controller="searchController" ng-init="acceptSearch();searchPage(1);" style="display: none">
 		<!-- 头部栏位 -->
 		<!--页面顶部-->
 		<div id="nav-bottom">
@@ -86,12 +82,8 @@
 									<form action="" class="sui-form form-inline">
 										<!--searchAutoComplete-->
 										<div class="input-append">
-											<input type="text"
-												   ng-model="searchParam.keywords"
-												   class="input-error input-xxlarge" />
-											<button class="sui-btn btn-xlarge btn-danger"
-													ng-click="searchParam.page=1;search()"
-													type="button">搜索</button>
+											<input type="text" id="autocomplete" type="text" class="input-error input-xxlarge" ng-model="search.criteria"/>
+											<button class="sui-btn btn-xlarge btn-danger" type="button" ng-click="searchPage(1)">搜索</button>
 										</div>
 									</form>
 								</div>
@@ -154,150 +146,81 @@
 	<div class="main">
 		<div class="py-container">
 			<!--bread-->
-			<div class="bread">
+			<div class="bread" >
 				<ul class="fl sui-breadcrumb">
 					<li>
-						按"<span style="color: red;">{{keyword}}</span>"关键字，
-						搜索到 <b>{{resultMap.total}}</b>条记录.
+						<a href="javascript:;" ng-click="search = {pageSize:10,criteria:'',spec:{},sort:{}};searchPage(1)">全部结果</a>
 					</li>
 				</ul>
 				<ul class="tags-choose">
-					<li class="tag" ng-if="searchParam.category !=''">
-						分类：{{searchParam.category}}
-						<i class="sui-icon icon-tb-close"
-						   ng-click="removeSearchItem('category');"></i>
+					<li class="tag" ng-if="search.category != null">商品分类:{{search.category}}
+						<i class="sui-icon icon-tb-close" ng-click="deleteSearch('category')"></i>
 					</li>
-
-					<li class="tag" ng-if="searchParam.brand !=''">
-						品牌：{{searchParam.brand}}
-						<i class="sui-icon icon-tb-close"
-						   ng-click="removeSearchItem('brand');"></i>
+					<li class="tag" ng-if="search.brand != null">品牌:{{search.brand}}
+						<i class="sui-icon icon-tb-close" ng-click="deleteSearch('brand')"></i>
 					</li>
-					<!-- "spec":{"网络":"电信3G","机身内存":"128G"} -->
-					<li class="tag" ng-repeat="(key, value) in searchParam.spec">
-						{{key}}：{{value}}
-						<i class="sui-icon icon-tb-close"
-						   ng-click="removeSearchItem(key);"></i>
+					<li class="tag"  ng-if="search.spec[key] != null" ng-repeat="(key,value) in search.spec">{{key}}:{{value}}
+						<i class="sui-icon icon-tb-close" ng-click="deleteSearch(key,1)"></i>
 					</li>
-					<li class="tag" ng-if="searchParam.price !=''">
-						价格：{{searchParam.price}}
-						<i class="sui-icon icon-tb-close"
-						   ng-click="removeSearchItem('price');"></i>
+					<li class="tag" ng-if="search.price != null">价格:{{search.price != '3000-*' ? search.price+'元':'3000元以上'}}
+						<i class="sui-icon icon-tb-close" ng-click="deleteSearch('price')"></i>
 					</li>
 
 				</ul>
 				<div class="clearfix"></div>
 			</div>
-			{{searchParam}}
 			<!--selector-->
-			<div class="clearfix selector">
-				<div class="type-wrap" ng-if="searchParam.category == ''">
+			<div class="clearfix selector" >
+				<div class="type-wrap" ng-if="search.category == null">
 					<div class="fl key">商品分类</div>
 					<div class="fl value">
-						<a href="javascript:;"
-						   ng-click="addSearchItem('category','手机')"
-						   style="margin-right: 10px">手机</a>
-						<a href="javascript:;"
-						   ng-click="addSearchItem('category','平板电视')"
-						   style="margin-right: 10px">平板电视</a>
+						<a href="javascript:;" style="margin-right: 10px" ng-repeat="category in categorySet" ng-click="updateSearch('category',category)">{{category}}</a>
 					</div>
 					<div class="fl ext"></div>
 				</div>
-				<div class="type-wrap logo" ng-if="searchParam.brand == ''">
-					<div class="fl key brand">品牌</div>
-					<div class="value logos">
-						<ul class="logo-list">
-							<li style="cursor: pointer"
-								ng-click="addSearchItem('brand','苹果')">
-								<img src="img/_/phone01.jpg"/></li>
-							<li style="cursor: pointer"
-								ng-click="addSearchItem('brand','三星')">
-								<img src="img/_/phone02.jpg"/></li>
-							<li style="cursor: pointer"
-								ng-click="addSearchItem('brand','华为')">
-								<img src="img/_/phone03.jpg"/></li>
-							<li style="cursor: pointer"
-								ng-click="addSearchItem('brand','小米')">
-								<img src="img/_/phone04.jpg"/></li>
-							<li style="cursor: pointer"
-								ng-click="addSearchItem('brand','OPPO')">
-								<img src="img/_/phone05.jpg"/></li>
-							<li style="cursor: pointer"
-								ng-click="addSearchItem('brand','VIVO')">
-								<img src="img/_/phone06.jpg"/></li>
+				<div class="type-wrap" ng-if="search.brand == null">
+					<div class="fl key">品牌</div>
+					<div class="fl value">
+						<ul class="type-list">
+							<li style="cursor: pointer" ng-repeat="brand in brandSet" ng-click="updateSearch('brand',brand)">{{brand}}</li>
 						</ul>
 					</div>
 					<div class="ext">
 						<a href="javascript:void(0);">更多</a>
 					</div>
 				</div>
-				<div class="type-wrap" ng-if="searchParam.spec['网络'] == null">
-					<div class="fl key">网络</div>
+				<div class="type-wrap" ng-repeat="(key,value) in specMap" ng-if="search.spec[key] == null">
+					<div class="fl key" >{{key}}</div>
 					<div class="fl value">
 						<ul class="type-list">
-							<li>
-								<a ng-click="addSearchItem('网络','移动3G')">移动3G</a>
-							</li>
-							<li>
-								<a ng-click="addSearchItem('网络','联通3G')">联通3G</a>
-							</li>
-							<li>
-								<a ng-click="addSearchItem('网络','电信3G')">电信3G</a>
-							</li>
-							<li>
-								<a ng-click="addSearchItem('网络','移动4G')">移动4G</a>
-							</li>
-							<li>
-								<a ng-click="addSearchItem('网络','联通4G')">联通4G</a>
-							</li>
-							<li>
-								<a ng-click="addSearchItem('网络','电信4G')">电信4G</a>
+							<li ng-repeat="v in value track by $index">
+								<a ng-click="updateSearch(key,v,1)">{{v}}</a>
 							</li>
 						</ul>
 					</div>
 					<div class="fl ext"></div>
 				</div>
-				<div class="type-wrap" ng-if="searchParam.spec['机身内存'] == null">
-					<div class="fl key">机身内存</div>
-					<div class="fl value">
-						<ul class="type-list">
-							<li>
-								<a ng-click="addSearchItem('机身内存','16G')">16G</a>
-							</li>
-							<li>
-								<a ng-click="addSearchItem('机身内存','32G')">32G</a>
-							</li>
-							<li>
-								<a ng-click="addSearchItem('机身内存','64G')">64G</a>
-							</li>
-							<li>
-								<a ng-click="addSearchItem('机身内存','128G')">128G</a>
-							</li>
-						</ul>
-					</div>
-					<div class="fl ext"></div>
-				</div>
-				<div class="type-wrap" ng-if="searchParam.price == ''">
+				<div class="type-wrap"  ng-if="search.price == null">
 					<div class="fl key">价格</div>
 					<div class="fl value">
 						<ul class="type-list">
 							<li>
-								<a ng-click="addSearchItem('price','0-500')">0-500元</a>
+								<a ng-click="updateSearch('price','0-500')">0-500元</a>
 							</li>
 							<li>
-								<a ng-click="addSearchItem('price','500-1000')">500-1000元</a>
+								<a ng-click="updateSearch('price','500-1000')">500-1000元</a>
 							</li>
 							<li>
-								<a ng-click="addSearchItem('price','1000-1500')">1000-1500元</a>
+								<a ng-click="updateSearch('price','1000-1500')">1000-1500元</a>
 							</li>
 							<li>
-								<a ng-click="addSearchItem('price','1500-2000')">1500-2000元</a>
+								<a ng-click="updateSearch('price','1500-2000')">1500-2000元</a>
 							</li>
 							<li>
-								<a ng-click="addSearchItem('price','2000-3000')">2000-3000元 </a>
+								<a ng-click="updateSearch('price','2000-3000')">2000-3000元 </a>
 							</li>
 							<li>
-								<a ng-click="addSearchItem('price','3000-*')">3000元以上</a>
+								<a ng-click="updateSearch('price','3000-*')">3000元以上</a>
 							</li>
 						</ul>
 					</div>
@@ -310,34 +233,33 @@
 				<div class="sui-navbar">
 					<div class="navbar-inner filter">
 						<ul class="sui-nav">
-							<li class="{{searchParam.sortField == '' ? 'active' : ''}}">
-								<a href="javascript:;" ng-click="sortSearch('','');">综合</a>
+							<li class="active">
+								<a href="javascript:;" ng-click="deleteSearch('sort',2)">综合</a>
 							</li>
 							<li>
-								<a href="#">销量</a>
-							</li>
-							<li class="{{searchParam.sortField == 'updateTime' ? 'active' : ''}}">
-								<a href="javascript:;" ng-click="sortSearch('updateTime','DESC');">新品</a>
+								<a href="javascript:;">销量</a>
 							</li>
 							<li>
-								<a href="#">评价</a>
+								<a href="javascript:;">评价</a>
 							</li>
-							<li class="{{searchParam.sortField == 'price' && searchParam.sortValue == 'ASC' ? 'active' : ''}}">
-								<a href="javascript:;" ng-click="sortSearch('price','ASC');">价格↑</a>
+							<li>
+								<a href="javascript:;" ng-click="updateSearch('updateTime','desc',2)">新品</a>
 							</li>
-							<li class="{{searchParam.sortField == 'price' && searchParam.sortValue == 'DESC' ? 'active' : ''}}">
-								<a href="javascript:;" ng-click="sortSearch('price','DESC');">价格↓</a>
+							<li>
+								<a href="javascript:;" ng-click="updateSearch('price','asc',2)">价格↑</a>
+							</li>
+							<li>
+								<a href="javascript:;" ng-click="updateSearch('price','desc',2)">价格↓</a>
 							</li>
 						</ul>
 					</div>
 				</div>
 				<div class="goods-list">
 					<ul class="yui3-g">
-						<li class="yui3-u-1-5" ng-repeat="item in resultMap.rows">
+						<li class="yui3-u-1-5" ng-repeat="item in itemList">
 							<div class="list-wrap">
 								<div class="p-img">
-									<a href="http://item.pinyougou.com/{{item.goodsId}}.html" target="_blank">
-										<img src="{{item.image}}" /></a>
+									<a href="http://item.pinyougou.com/{{item.goodsId}}.html" target="_blank"><img src="{{item.image}}" /></a>
 								</div>
 								<div class="price">
 									<strong>
@@ -345,10 +267,8 @@
 											<i>{{item.price}}</i>
 										</strong>
 								</div>
-								<div class="attr"
-									 style="line-height: 20px"
-									 ng-bind-html="trustHtml(item.title)">
-
+								<div class="attr" ng-bind-html="item.title |trustHtml">
+									<!--<em>{{item.title}}</em>-->
 								</div>
 								<div class="cu">
 									<em></em>
@@ -363,36 +283,26 @@
 								</div>
 							</div>
 						</li>
-
 					</ul>
 				</div>
 				<div class="fr page">
 					<div class="sui-pagination pagination-large">
 						<ul>
-							<li class="prev {{searchParam.page == 1 ? 'disabled' : ''}}">
-								<a href="javascript:;"
-								   ng-click="pageSearch(searchParam.page - 1)">«上一页</a>
+							<li class="prev {{page.current == 1?'disabled':''}}" >
+								<a href="javascript:;" ng-click="searchPage(page.previous)">«上一页</a>
 							</li>
-
-							<li class="dotted" ng-if="firstDot"><span>...</span></li>
-
-							<li class="{{searchParam.page == p ? 'active' : ''}}"
-								ng-repeat="p in pageNums">
-								<a href="javascript:;"
-								   ng-click="pageSearch(p)">{{p}}</a>
+							<li class="{{page.current == i? 'active' : ''}}" ng-repeat="i in pageFor">
+								<a href="javascript:;" ng-click="searchPage(i)">{{i}}</a>
 							</li>
-
-							<li class="dotted" ng-if="lastDot"><span>...</span></li>
-
-							<li class="next {{searchParam.page ==  resultMap.totalPages ? 'disabled' : ''}}">
-								<a href="javascript:;"
-								   ng-click="pageSearch(searchParam.page + 1)">下一页»</a>
+							<li class="dotted" ng-if="page.end != page.total"><span>...</span></li>
+							<li class="next {{page.current == page.total ? 'disabled':''}}">
+								<a href="javascript:;" ng-click="searchPage(page.next)">下一页»</a>
 							</li>
 						</ul>
-						<div><span>共<b>{{resultMap.totalPages}}</b>页&nbsp;</span><span>到第
-      						<input type="text" ng-model="jumpPage" size="3" />
-      						页 <button class="page-confirm"
-									  ng-click="pageSearch(jumpPage)">确定</button></span></div>
+						<div><span>共{{page.total}}页&nbsp;</span><span>
+      到第
+      <input type="text" class="page-num" ng-model="d"/>
+      页 <button class="page-confirm" ng-click="searchPage(d)">确定</button></span></div>
 					</div>
 				</div>
 			</div>

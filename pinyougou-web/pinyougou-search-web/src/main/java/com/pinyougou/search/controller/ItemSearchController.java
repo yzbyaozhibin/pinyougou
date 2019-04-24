@@ -23,8 +23,8 @@ public class ItemSearchController {
 
     /** 搜索方法(解决搜索高并发) */
     @PostMapping("/Search")
-    public Map<String,Object> search(@RequestBody Map<String, Object> params){
-        return itemSearchService.search(params);
+    public Map search(@RequestBody Map<String,Object> search){
+        return itemSearchService.search(search);
     }
 
 }
