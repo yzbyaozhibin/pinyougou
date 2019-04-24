@@ -31,4 +31,18 @@ public interface SeckillOrderService {
 	/** 多条件分页查询 */
 	List<SeckillOrder> findByPage(SeckillOrder seckillOrder, int page, int rows);
 
+	/** 秒杀下单 */
+    void submitOrderRedis(String userId, Long id);
+
+    /** 从Redis数据库中获取秒杀订单 */
+    SeckillOrder findSeckillOrderFromRedis(String userId);
+
+    /** 保存秒杀订单 */
+	void saveSeckillOrder(String userId, String transactionId);
+
+	/** 查询超时5分钟未支付的秒杀订单 */
+    List<SeckillOrder> findOrderByTimeout();
+
+    /** 删除未支付的秒杀订单，增加库存 */
+	void deleteOrderFromRedis(SeckillOrder seckillOrder);
 }

@@ -35,6 +35,10 @@ public class WeixinPayServiceImpl implements WeixinPayService {
     /** 查询订单接口的URL */
     @Value("${orderquery}")
     private String orderquery;
+    /** 关闭订单接口的URL */
+    @Value("${closeorder}")
+    private String closeorder;
+
 
 
     /**
@@ -115,6 +119,40 @@ public class WeixinPayServiceImpl implements WeixinPayService {
             // 2. 调用查询订单接口
             HttpClientUtils httpClientUtils = new HttpClientUtils(true);
             String xmlData = httpClientUtils.sendPost(orderquery, xmlParam);
+            System.out.println("响应数据 = " + xmlData);
+
+            // 3. 把xml格式字符串转化成map集合，直接返回
+            return WXPayUtil.xmlToMap(xmlData);
+
+        }catch (Exception ex){
+            throw new RuntimeException(ex);
+        }
+    }
+
+    /**
+     * 调用微信支付系统的"关闭订单接口"
+     *  获取return_code，判断关单状态
+     */
+    public Map<String,String> closePayTimeout(String outTradeNo){
+        try{
+            // 1. 定义Map集合封装请求参数
+            Map<String, String> params = new HashMap<>();
+            // 公众账号ID	appid
+            params.put("appid", appid);
+            // 商户号	mch_id
+            params.put("mch_id", partner);
+            // 商户订单号	out_trade_no
+            params.put("out_trade_no", outTradeNo);
+            // 随机字符串	nonce_str
+            params.put("nonce_str", WXPayUtil.generateNonceStr());
+
+            //  生成带签名的xml请求参数
+            String xmlParam = WXPayUtil.generateSignedXml(params, partnerkey);
+            System.out.println("请求参数 = " + xmlParam);
+
+            // 2. 调用关闭订单接口
+            HttpClientUtils httpClientUtils = new HttpClientUtils(true);
+            String xmlData = httpClientUtils.sendPost(closeorder, xmlParam);
             System.out.println("响应数据 = " + xmlData);
 
             // 3. 把xml格式字符串转化成map集合，直接返回
