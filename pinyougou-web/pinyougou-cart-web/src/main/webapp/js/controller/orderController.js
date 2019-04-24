@@ -118,5 +118,15 @@ app.controller('orderController', function ($scope, $controller, $interval, $loc
         return $location.search().money;
     };
 
+    $scope.js=function (index) {
+        if (index === $scope.addressList.length-1){
+            $(".address").hover(function(){
+                $(this).addClass("address-hover");
+            },function(){
+                $(this).removeClass("address-hover");
+            });
+            $("body").show();
+        }
+    }
 
 });

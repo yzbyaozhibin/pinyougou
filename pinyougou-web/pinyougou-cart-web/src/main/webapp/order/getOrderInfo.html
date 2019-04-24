@@ -15,7 +15,7 @@
 </head>
 <body ng-app="pinyougou"
 	  ng-controller="orderController"
-	  ng-init="findAddressByUser();loadUsername();findCart();">
+	  ng-init="findAddressByUser();loadUsername();findCartList()" style="display: none">
 	<!--head-->
 	<div class="top">
 		<div class="py-container">
@@ -72,7 +72,7 @@
 					<div class="addressInfo">
 						<ul class="addr-detail">
 							<li class="addr-item">
-							
+
 							  <div ng-repeat="item in addressList">
 
 								  	<!-- selected -->
@@ -87,13 +87,14 @@
 										{{item.address}}
 										<span>{{item.mobile}}</span>
 										<span ng-if="item.isDefault == 1" class="base">默认地址</span>
-										<span>
+										<span class="edittext">
 											<a data-toggle="modal" data-target=".edit"
 											   data-keyboard="false" >编辑</a>&nbsp;&nbsp;
 											<a href="javascript:;">删除</a>
 										</span>
 									</div>
 									<div class="clearfix"></div>
+								  <input type="hidden" value="{{js($index)}}"/>
 							  </div>
 
 							</li>
@@ -115,7 +116,7 @@
 									      <input type="text" class="input-medium">
 									    </div>
 									  </div>
-									   
+
 									   <div class="control-group">
 									    <label class="control-label">详细地址：</label>
 									    <div class="controls">
@@ -160,7 +161,7 @@
 						 <!--确认地址-->
 					</div>
 					<div class="hr"></div>
-					
+
 				</div>
 				<div class="hr"></div>
 				<!--支付和送货-->
@@ -176,7 +177,6 @@
 								货到付款<span title="点击取消选择"></span></li>
 						</ul>
 					</div>
-					{{order}}
 					<div class="hr"></div>
 					<div class="step-tit">
 						<h5>送货清单</h5>
@@ -228,8 +228,8 @@
 		<div class="order-summary">
 			<div class="static fr">
 				<div class="list">
-					<span><i class="number">{{totalEntity.totalNum}}</i>件商品，总商品金额</span>
-					<em class="allprice">¥{{totalEntity.totalMoney.toFixed(2)}}</em>
+					<span><i class="number">{{totalNum}}</i>件商品，总商品金额</span>
+					<em class="allprice">¥{{totalPrice}}</em>
 				</div>
 				<div class="list">
 					<span>返现：</span>
@@ -242,8 +242,7 @@
 			</div>
 		</div>
 		<div class="clearfix trade">
-			<div class="fc-price">应付金额:　<span class="price">¥{{totalEntity.totalMoney.toFixed(2)}}</span></div>
-			<div class="fc-receiverInfo">
+			<div class="fc-price">应付金额:　<span class="price">¥{{totalPrice}}</span></div>			<div class="fc-receiverInfo">
 				寄送至：{{address.address}} 收货人：{{address.contact}} 手机号码：{{address.mobile}}</div>
 		</div>
 		<div class="submit">
@@ -388,5 +387,6 @@
 <script src="/js/plugins/jquery.easing/jquery.easing.min.js"></script>
 <script src="/js/plugins/sui/sui.min.js"></script>
 <script src="/js/pages/getOrderInfo.js"></script>
+
 </body>
 </html>
