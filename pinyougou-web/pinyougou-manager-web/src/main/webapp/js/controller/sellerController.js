@@ -89,4 +89,7 @@ app.controller('sellerController', function($scope, $controller, baseService){
     $scope.searchStatus=function (status) {
         $scope.searchEntity.status=status;
     };
+    $scope.showS=function (index) {
+        $scope.entity = JSON.parse($scope.dataList[index]);
+    };
 });
