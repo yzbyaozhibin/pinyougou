@@ -89,7 +89,7 @@
 										<span ng-if="item.isDefault == 1" class="base">默认地址</span>
 										<span class="edittext">
 											<a data-toggle="modal" data-target=".edit"
-											   data-keyboard="false" >编辑</a>&nbsp;&nbsp;
+											   data-keyboard="false" ng-click="show(item)">编辑</a>&nbsp;&nbsp;
 											<a href="javascript:;">删除</a>
 										</span>
 									</div>
@@ -113,37 +113,37 @@
 						      		 <div class="control-group">
 									    <label class="control-label">收货人：</label>
 									    <div class="controls">
-									      <input type="text" class="input-medium">
+									      <input type="text" class="input-medium" ng-model="addressSave.contact" >
 									    </div>
 									  </div>
 
 									   <div class="control-group">
 									    <label class="control-label">详细地址：</label>
 									    <div class="controls">
-									      <input type="text" class="input-large">
+									      <input type="text" class="input-large" ng-model="addressSave.address" >
 									    </div>
 									  </div>
 									   <div class="control-group">
 									    <label class="control-label">联系电话：</label>
 									    <div class="controls">
-									      <input type="text" class="input-medium">
+									      <input type="text" class="input-medium" ng-model="addressSave.mobile" >
 									    </div>
 									  </div>
 									   <div class="control-group">
 									    <label class="control-label">邮箱：</label>
 									    <div class="controls">
-									      <input type="text" class="input-medium">
+									      <input type="text" class="input-medium" ng-model="addressSave.notes.email">
 									    </div>
 									  </div>
 									   <div class="control-group">
 									    <label class="control-label">地址别名：</label>
 									    <div class="controls">
-									      <input type="text" class="input-medium">
+									      <input type="text" class="input-medium" ng-model="addressSave.alias" >
 									    </div>
 									    <div class="othername">
-									    	建议填写常用地址：<a href="#" class="sui-btn btn-default">家里</a>　
-											<a href="#" class="sui-btn btn-default">父母家</a>　
-											<a href="#" class="sui-btn btn-default">公司</a>
+									    	建议填写常用地址：<a href="#" class="sui-btn btn-default" ng-click="selectAlias('家里')">家里</a>　
+											<a href="#" class="sui-btn btn-default" ng-click="selectAlias('父母家')">父母家</a>　
+											<a href="#" class="sui-btn btn-default" ng-click="selectAlias('公司')">公司</a>
 									    </div>
 									  </div>
 						      	</form>

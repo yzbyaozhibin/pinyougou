@@ -1,9 +1,8 @@
 // 定义购物车的控制器
 app.controller('orderController', function ($scope, $controller, $interval, $location, baseService) {
-
     // 继承cartController
     $controller('cartController', {$scope : $scope});
-
+    $scope.addressSave={notes:[]};
     // 获取收件人地址列表
     $scope.findAddressByUser = function () {
         // 发送异步请求
@@ -25,6 +24,12 @@ app.controller('orderController', function ($scope, $controller, $interval, $loc
     $scope.isSelectedAddress = function (item) {
         return $scope.address == item;
     };
+
+    /** 显示修改 */
+    $scope.show = function (item) {
+        /** 把json对象转化成一个新的json对象*/
+        $scope.addressSave= JSON.parse(JSON.stringify(item));
+    }
 
     // 定义数据封装的json对象
     $scope.order = {paymentType : '1'};
@@ -127,6 +132,12 @@ app.controller('orderController', function ($scope, $controller, $interval, $loc
             });
             $("body").show();
         }
+    };
+
+    /** 选择地址别名 */
+    $scope.selectAlias=function (alias) {
+        $scope.addressSave.alias=alias;
     }
+
 
 });

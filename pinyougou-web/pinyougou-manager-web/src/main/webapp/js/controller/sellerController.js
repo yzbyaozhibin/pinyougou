@@ -90,6 +90,6 @@ app.controller('sellerController', function($scope, $controller, baseService){
         $scope.searchEntity.status=status;
     };
     $scope.showS=function (index) {
-        $scope.entity = JSON.parse($scope.dataList[index]);
+        $scope.entity = JSON.parse(JSON.stringify($scope.dataList[index]));
     };
 });
