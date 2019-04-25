@@ -7,14 +7,13 @@ import com.pinyougou.common.util.CookieUtils;
 import com.pinyougou.service.CartService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 购物车控制器
@@ -125,6 +124,32 @@ public class CartController {
             carts = JSON.parseArray(cartJsonStr, Cart.class);
         }
         return carts;
+    }
+    @PostMapping("/addCartOrders")
+    public Map<String,Object> addCartOrders(@RequestBody List<Cart> cartOrders){
+        Map<String,Object> map = new HashMap<>();
+        try {
+            String userId = request.getRemoteUser();
+            List<Cart> carts = findCart();
+            cartService.saveCartOrdersToRedis(userId,cartOrders,carts);
+            map.put("success",true);
+            return map;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        map.put("success",false);
+        map.put("message","网络异常");
+        return map;
+    }
+    @GetMapping("/findCartOrders")
+    public List<Cart> findCartOrders(){
+        try {
+            String userId = request.getRemoteUser();
+            return cartService.findCartOrdersFromRedis(userId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
 }

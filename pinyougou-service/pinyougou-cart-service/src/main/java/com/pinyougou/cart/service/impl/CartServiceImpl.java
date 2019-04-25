@@ -1,5 +1,6 @@
 package com.pinyougou.cart.service.impl;
 import com.alibaba.dubbo.config.annotation.Service;
+import com.alibaba.fastjson.JSONArray;
 import com.pinyougou.cart.Cart;
 import com.pinyougou.mapper.ItemMapper;
 import com.pinyougou.pojo.Item;
@@ -193,5 +194,43 @@ public class CartServiceImpl implements CartService {
        }catch (Exception ex){
            throw new RuntimeException(ex);
        }
+    }
+
+    @Override
+    public void saveCartOrdersToRedis(String userId, List<Cart> cartOrders, List<Cart> carts) {
+        List<Cart> cartsCopy = JSONArray.parseArray(JSONArray.toJSONString(carts),Cart.class);
+        try{
+            redisTemplate.boundValueOps("cartOrder_" + userId).set(cartOrders);
+            for (Cart cartOrder : cartOrders) {
+                for (int j = 0; j < cartOrder.getOrderItems().size(); j++) {
+                    for (int k = 0; k < cartsCopy.size(); k++) {
+                        for (int l = 0; l < cartsCopy.get(k).getOrderItems().size(); l++) {
+                            if (cartOrder.getOrderItems().get(j).getItemId().longValue() == cartsCopy.get(k).getOrderItems().get(l).getItemId().longValue()) {
+                                carts.get(k).getOrderItems().remove(l);
+                                if (carts.get(k).getOrderItems().size() == 0) {
+                                    carts.remove(k);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            redisTemplate.boundValueOps("cart_" + userId).set(carts);
+        }catch (Exception ex){
+            throw new RuntimeException(ex);
+        }
+    }
+
+    public List<Cart> findCartOrdersFromRedis(String userId){
+        try{
+            List<Cart> carts = (List<Cart>)redisTemplate.boundValueOps("cartOrder_" + userId).get();
+            if (carts == null){
+                carts = new ArrayList<>();
+            }
+            return carts;
+        }catch (Exception ex){
+            throw new RuntimeException(ex);
+        }
     }
 }

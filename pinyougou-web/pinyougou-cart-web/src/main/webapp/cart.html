@@ -76,7 +76,7 @@
 		<h4>全部商品<span>{{totalNum}}</span></h4>
 		<div class="cart-main">
 			<div class="yui3-g cart-th">
-				<div class="yui3-u-1-4"><input type="checkbox" name="" value=""/> 全部</div>
+				<div class="yui3-u-1-4"><input type="checkbox" name="" value="" ng-click="selectAll($event)"/> 全部</div>
 				<div class="yui3-u-1-4">商品</div>
 				<div class="yui3-u-1-8">单价（元）</div>
 				<div class="yui3-u-1-8">数量</div>
@@ -86,7 +86,7 @@
 			<div class="cart-item-list" ng-repeat="cart in carts">
 				<input type="hidden" value="{{x=$index}}"/>
 				<div class="cart-shop">
-					<input type="checkbox" name="" value=""  ng-click="sellerSelect($index,$event)"/>
+					<input type="checkbox" name="{{x}}" value=""  ng-click="sellerSelect($index,$event)"/>
 					<span class="shopname self">{{cart.sellerName}}</span>
 				</div>
 				<div class="cart-body" ng-repeat="orderItem in cart.orderItems">
@@ -123,7 +123,7 @@
 			{{orderCarts}}
 			<div class="cart-tool">
 				<div class="select-all">
-					<input type="checkbox" name="" value=""/>
+					<input type="checkbox" name="" value="" ng-click="selectAll($event)"/>
 					<span>全选</span>
 				</div>
 				<div class="option">
@@ -134,11 +134,11 @@
 				<div class="toolbar">
 					<div class="chosed">已选择<span>{{totalNum}}</span>件商品</div>
 					<div class="sumprice">
-						<span><em>总价（不含运费） ：</em><i class="summoney">¥{{totalPrice}}</i></span>
+						<span><em>总价（不含运费） ：</em><i class="summoney">¥{{stf}}</i></span>
 						<span><em>已节省：</em><i>-¥20.00</i></span>
 					</div>
 					<div class="sumbtn">
-						<a class="sum-btn" href="/order/getOrderInfo.html" target="_blank">结算</a>
+						<a class="sum-btn" href="javascript:;" ng-click="addCartOrders()" target="_blank">结算</a>
 					</div>
 				</div>
 			</div>

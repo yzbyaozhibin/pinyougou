@@ -47,7 +47,7 @@ public class OrderServiceImpl implements OrderService {
 
             // 获取该用户的购物车
             List<Cart> cartList = (List<Cart>)redisTemplate
-                    .boundValueOps("cart_" + order.getUserId()).get();
+                    .boundValueOps("cartOrder_" + order.getUserId()).get();
 
             // 定义支付的总金额
             double totalMoney = 0;
@@ -140,7 +140,7 @@ public class OrderServiceImpl implements OrderService {
 
 
             // 删除Redis中购物车数据
-            redisTemplate.delete("cart_" + order.getUserId());
+            redisTemplate.delete("cartOrder_" + order.getUserId());
 
         }catch (Exception ex){
             throw new RuntimeException(ex);
