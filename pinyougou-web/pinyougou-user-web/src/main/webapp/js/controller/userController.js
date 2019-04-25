@@ -1,6 +1,6 @@
 /** 定义控制器层 */
-app.controller('userController', function($scope, $timeout, baseService){
-
+app.controller('userController', function($scope, $timeout, baseService,$controller){
+    $controller('indexController',{$scope:$scope});
     // 定义user对象
     $scope.user = {};
     /** 用户注册 */
@@ -74,4 +74,45 @@ app.controller('userController', function($scope, $timeout, baseService){
 
     };
 
+
+    //判断用户原密码是否正确
+    $scope.changePassword=function () {
+        if($scope.user.newPassword == $scope.rePassword && $scope.user.newPassword){
+            if ($scope.user.oldPassword ){
+                baseService.sendPost("/user/codePassword",$scope.user).then(function (response) {
+                    if (response.data == true){
+                        alert("修改成功");
+                        $scope.user={};
+                        $scope.rePassword="";
+                    }else {
+                        $("#oldPasswordWarn").html("原密码错误!");
+                    }
+                })
+            }else {
+                $("#oldPasswordWarn").html("密码不能为空!");
+            }
+        }else {
+            $("#rePasswordWarn").html("修改的密码有误!");
+            return;
+        }
+    };
+    // 获取收件人地址列表
+    $scope.findAddressByUser = function () {
+        // 发送异步请求
+        baseService.sendGet("/address/findAddressByUser").then(function(response){
+            // 获取响应数据
+            $scope.addressList = response.data;
+
+            // 获取默认的收件地址
+            $scope.address = $scope.addressList[0];
+        });
+    };
+
+    //显示详细地址
+    $scope.showAddress=function (item) {
+        $scope.addressSave=item;
+    };
+    $scope.changeAlias=function (alias) {
+        $scope.addressSave.alias=alias;
+    }
 });

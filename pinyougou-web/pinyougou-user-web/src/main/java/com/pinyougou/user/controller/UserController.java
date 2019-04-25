@@ -3,7 +3,12 @@ package com.pinyougou.user.controller;
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.pinyougou.pojo.User;
 import com.pinyougou.service.UserService;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.web.bind.annotation.*;
+import sun.security.provider.MD5;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 
 /**
  * 用户控制器
@@ -47,4 +52,18 @@ public class UserController {
         return false;
     }
 
+    //验证原密码
+    @PostMapping("/codePassword")
+    public Boolean codePassword(@RequestBody Map userMap,HttpServletRequest request){
+        String oldPassword = (String) userMap.get("oldPassword");
+        String username = request.getRemoteUser();
+        User user = userService.selectUser(username);
+        String password = user.getPassword();
+        if (DigestUtils.md5Hex(oldPassword).equals(password)){
+            userService.updatePassword((String)userMap.get("newPassword"),username);
+            return true;
+        }else {
+            return false;
+        }
+    }
 }

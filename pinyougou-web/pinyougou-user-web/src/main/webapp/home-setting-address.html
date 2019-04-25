@@ -4,13 +4,18 @@
     <meta charset="UTF-8"/>
     <title>设置-个人信息</title>
     <link rel="icon" href="/assets/img/favicon.ico"/>
-
     <link rel="stylesheet" type="text/css" href="/css/webbase.css"/>
-    
 	<link rel="stylesheet" type="text/css" href="css/pages-seckillOrder.css"/>
 
+	<script src="/plugins/angularjs/angular.min.js"></script>
+	<script src="/js/base.js"></script>
+	<script src="/js/service/baseService.js"></script>
+	<script src="/js/controller/indexController.js"></script>
+	<script src="/js/controller/userController.js"></script>
+
+
 </head>
-<body>
+<body ng-app="pinyougou" ng-controller="userController" ng-init="findAddressByUser();">
     <!-- 头部栏位 -->
     <!--页面顶部-->
 <div id="nav-bottom">
@@ -212,27 +217,18 @@ $(function(){
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td>刘田田</td>
-                                        <td>北京 北京市 海淀区 上地街道东北旺西路8号中关村软件园9号楼</td>
-                                        <td>1774***********4</td>
+                                    <tr ng-repeat="item in addressList">
+                                        <td>{{item.contact}}</td>
+                                        <td>{{item.address}}</td>
+                                        <td>{{item.mobile}}</td>
                                         <td>
-                                            <a href="#">编辑</a>
+                                            <a ng-click="showAddress(item)" href="#" data-toggle="modal" data-target=".edit" data-keyboard="false">编辑</a>
                                             <a href="#">删除</a>
-                                            默认地址
+                                            <span ng-if="address.id == item.id">默认地址</span>
+                                            <a href="JavaScript:;" ng-if="address.id != item.id">设为默认</a>
                                         </td>
                                     </tr>
-                                    <tr>
-                                        <td>沈沉</td>
-                                        <td>北京 北京市 海淀区 上地街道东北旺西路8号中关村软件园9号楼</td>
-                                        <td>1774***********4</td>
-                                        <td>
-                                            <a href="#">编辑</a>
-                                            <a href="#">删除</a>
-                                            <a href="#">设为默认</a>
-                                        </td>
-                                    </tr>
-                                    
+
                                 </tbody>
                             </table>                          
                         </div>
@@ -248,8 +244,8 @@ $(function(){
                                         <form action="" class="sui-form form-horizontal">
                                             <div class="control-group">
                                             <label class="control-label">收货人：</label>
-                                            <div class="controls">
-                                                <input type="text" class="input-medium">
+                                            <div class="controls"  >
+                                                <input ng-model="addressSave.contact" type="text" class="input-medium">
                                             </div>
                                         </div>
                                         <div class="control-group">
@@ -257,13 +253,20 @@ $(function(){
                                             <div class="controls">
                                                 <div data-toggle="distpicker">
                                                 <div class="form-group area">
-                                                    <select class="form-control" id="province1"></select>
+                                                    <select ng-options="p for p in addressSave" ng-model="addressSave.province" class="form-control" id="province1">
+														<option value="">==请选择省份==</option>
+													</select>
+                                                </div>
+
+                                                <div class="form-group area">
+                                                    <select ng-model="addressSave.cities" class="form-control" id="city1">
+														<option value="">==请选择城市==</option>
+													</select>
                                                 </div>
                                                 <div class="form-group area">
-                                                    <select class="form-control" id="city1"></select>
-                                                </div>
-                                                <div class="form-group area">
-                                                    <select class="form-control" id="district1"></select>
+                                                    <select ng-model="addressSave.areas" class="form-control" id="district1">
+														<option value="">==请选择区域==</option>
+													</select>
                                                 </div>
                                             </div>
                                             </div>									 
@@ -271,28 +274,31 @@ $(function(){
                                         <div class="control-group">
                                             <label class="control-label">详细地址：</label>
                                             <div class="controls">
-                                                <input type="text" class="input-large">
+                                                <input ng-model="addressSave.address" type="text" class="input-large">
                                             </div>
                                         </div>
                                         <div class="control-group">
                                             <label class="control-label">联系电话：</label>
                                             <div class="controls">
-                                                <input type="text" class="input-medium">
+                                                <input ng-model="addressSave.mobile" type="text" class="input-medium">
                                             </div>
                                         </div>
                                         <div class="control-group">
                                             <label class="control-label">邮箱：</label>
                                             <div class="controls">
-                                                <input type="text" class="input-medium">
+                                                <input ng-model="addressSave.notes" type="text" class="input-medium">
                                             </div>
                                         </div>
                                         <div class="control-group">
                                             <label class="control-label">地址别名：</label>
                                             <div class="controls">
-                                                <input type="text" class="input-medium">
+                                                <input ng-model="addressSave.alias"  type="text" class="input-medium">
                                             </div>
                                             <div class="othername">
-                                                建议填写常用地址：<a href="#" class="sui-btn btn-default">家里</a>　<a href="#" class="sui-btn btn-default">父母家</a>　<a href="#" class="sui-btn btn-default">公司</a>
+                                                建议填写常用地址：
+												<a ng-click="changeAlias('家里')" href="#" class="sui-btn btn-default">家里</a>　
+												<a ng-click="changeAlias('父母家')" href="#" class="sui-btn btn-default">父母家</a>　
+												<a ng-click="changeAlias('公司')" href="#" class="sui-btn btn-default">公司</a>
                                             </div>
                                         </div>
                                         

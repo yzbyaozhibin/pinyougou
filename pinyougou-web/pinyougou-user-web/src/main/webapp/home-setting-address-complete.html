@@ -3,10 +3,8 @@
 <head>
     <meta charset="UTF-8"/>
     <title>设置-个人信息</title>
-    <link rel="icon" href="/assets/img/favicon.ico"/>
-
-    <link rel="stylesheet" type="text/css" href="/css/webbase.css"/>
-    
+	<link rel="icon" href="assets/img/favicon.ico"/>
+	<link rel="stylesheet" type="text/css" href="/css/webbase.css"/>
 	<link rel="stylesheet" type="text/css" href="/css/pages-seckillOrder.css"/>
 
 </head>
@@ -20,7 +18,7 @@
 			<div class="py-container">
 				<div class="shortcut">
 					<ul class="fl">
-						<li class="f-item">品优购欢迎您！</li>
+						<li class="f-item">{{loginName}},品优购欢迎您！</li>
 						<li class="f-item">请<a href="login.html" target="_blank">登录</a>　<span><a href="register.html" target="_blank">免费注册</a></span></li>
 					</ul>
 					<ul class="fr">
@@ -119,32 +117,6 @@
 		</div>
 	</div>
 </div>
-
-<script type="text/javascript" src="/js/plugins/jquery/jquery.min.js"></script>
-
-<script type="text/javascript">
-$(function(){
-	$("#service").hover(function(){
-		$(".service").show();
-	},function(){
-		$(".service").hide();
-	});
-	$("#shopcar").hover(function(){
-		$("#shopcarlist").show();
-	},function(){
-		$("#shopcarlist").hide();
-	});
-
-})
-</script>
-
-<script type="text/javascript" src="/js/plugins/jquery.easing/jquery.easing.min.js"></script>
-
-<script type="text/javascript" src="/js/plugins/sui/sui.min.js"></script>
-
-<script type="text/javascript" src="/js/widget/nav.js"></script>
-
-</body>
     <!--header-->
     <div id="account">
         <div class="py-container">
@@ -196,7 +168,7 @@ $(function(){
                             <div id="one" class="tab-pane">
                                 <form class="sui-form form-horizontal sui-validate" id="jsForm">
                                     <div class="control-group">
-                                        <label for="inputusername" class="control-label">用户名：</label>
+                                        <label for="pwdid" class="control-label">用户名：</label>
                                         <div class="controls">
                                             <input id="pwdid" class="fn-tinput" data-rule-remote="http://www.baidu.com" type="password" name="OldPassword" placeholder="输入昵称"
                                                 required data-msg-required="请输入昵称" minlength="6" data-msg-minlength="至少输入6个字符"
@@ -207,13 +179,13 @@ $(function(){
                                     <div class="control-group">
                                         <label for="inputPassword" class="control-label">密码：</label>
                                         <div class="controls">
-                                            <input class="fn-tinput" type="password" name="password" value="" placeholder="新密码" required id="password" data-rule-remote="php.php">
+                                            <input id="inputPassword" class="fn-tinput" type="password" name="password" value="" placeholder="新密码" required id="password" data-rule-remote="php.php">
                                         </div>
                                     </div>
                                     <div class="control-group">
                                         <label for="inputRepassword" class="control-label">重复密码：</label>
                                         <div class="controls">
-                                            <input class="fn-tinput" type="password" name="confirm_password" value="" placeholder="确认新密码" required equalTo="#password">
+                                            <input id="inputRepassword" class="fn-tinput" type="password" name="confirm_password" value="" placeholder="确认新密码" required equalTo="#password">
                                         </div>
                                     </div>
 
@@ -400,5 +372,31 @@ $(function(){
 		</div>
 	</div>
 </div>
+
+	<script type="text/javascript" src="/js/plugins/jquery/jquery.min.js"></script>
+
+	<script type="text/javascript">
+        $(function(){
+            $("#service").hover(function(){
+                $(".service").show();
+            },function(){
+                $(".service").hide();
+            });
+            $("#shopcar").hover(function(){
+                $("#shopcarlist").show();
+            },function(){
+                $("#shopcarlist").hide();
+            });
+
+        })
+	</script>
+
+	<script type="text/javascript" src="/js/plugins/jquery.easing/jquery.easing.min.js"></script>
+
+	<script type="text/javascript" src="/js/plugins/sui/sui.min.js"></script>
+
+	<script type="text/javascript" src="/js/widget/nav.js"></script>
+
+</body>
 <!--页面底部END-->
 </html>

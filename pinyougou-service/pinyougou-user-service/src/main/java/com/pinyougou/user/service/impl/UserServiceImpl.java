@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.transaction.annotation.Transactional;
+import tk.mybatis.mapper.entity.Example;
 
 import java.io.Serializable;
 import java.util.*;
@@ -128,6 +129,19 @@ public class UserServiceImpl implements UserService {
         }catch (Exception ex){
             throw new RuntimeException(ex);
         }
+    }
+
+    @Override
+    public User selectUser(String username) {
+        return userMapper.selectUser(username);
+    }
+
+    @Override
+    public void updatePassword(String newPassword,String username) {
+       User user = new User();
+       user.setPassword(DigestUtils.md5Hex(newPassword));
+       user.setUsername(username);
+        userMapper.updatePasswordByUsername(user);
     }
 
 }

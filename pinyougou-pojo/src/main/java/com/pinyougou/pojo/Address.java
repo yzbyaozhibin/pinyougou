@@ -14,11 +14,11 @@ public class Address implements Serializable{
 	@Column(name="user_id")
     private String userId;
 	@Column(name="province_id")
-    private String provinceId;
+    private String provinceId;//省份表
 	@Column(name="city_id")
-    private String cityId;
+    private String cityId;//城市表
 	@Column(name="town_id")
-    private String townId;
+    private String townId;//区域表
 	@Column(name="mobile")
     private String mobile;
 	@Column(name="address")
@@ -33,6 +33,7 @@ public class Address implements Serializable{
     private Date createDate;
 	@Column(name="alias")
     private String alias;
+
 
     public Long getId() {
         return id;
