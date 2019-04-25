@@ -84,15 +84,16 @@
 				<div class="yui3-u-1-8">操作</div>
 			</div>
 			<div class="cart-item-list" ng-repeat="cart in carts">
+				<input type="hidden" value="{{x=$index}}"/>
 				<div class="cart-shop">
-					<input type="checkbox" name="" value=""/>
+					<input type="checkbox" name="" value=""  ng-click="sellerSelect($index,$event)"/>
 					<span class="shopname self">{{cart.sellerName}}</span>
 				</div>
 				<div class="cart-body" ng-repeat="orderItem in cart.orderItems">
 					<div class="cart-list">
 						<ul class="goods-list yui3-g">
 							<li class="yui3-u-1-24">
-								<input type="checkbox" name="" value=""/>
+								<input  type="checkbox"  name="{{x}}" value="" ng-click="addOrderCart(x,$index,$event)" />
 							</li>
 							<li class="yui3-u-11-24">
 								<div class="good-item">
@@ -119,7 +120,7 @@
 					</div>
 				</div>
 			</div>
-
+			{{orderCarts}}
 			<div class="cart-tool">
 				<div class="select-all">
 					<input type="checkbox" name="" value=""/>
