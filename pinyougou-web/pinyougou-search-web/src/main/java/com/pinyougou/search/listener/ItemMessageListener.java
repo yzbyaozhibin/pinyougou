@@ -7,7 +7,6 @@ import com.pinyougou.service.GoodsService;
 import com.pinyougou.service.ItemSearchService;
 import com.pinyougou.solr.SolrItem;
 import org.springframework.jms.listener.SessionAwareMessageListener;
-
 import javax.jms.JMSException;
 import javax.jms.ObjectMessage;
 import javax.jms.Session;

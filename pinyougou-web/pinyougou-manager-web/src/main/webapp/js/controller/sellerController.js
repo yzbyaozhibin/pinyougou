@@ -85,4 +85,8 @@ app.controller('sellerController', function($scope, $controller, baseService){
             alert("请选择要删除的记录！");
         }
     };
+
+    $scope.searchStatus=function (status) {
+        $scope.searchEntity.status=status;
+    };
 });
