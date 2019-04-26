@@ -4,6 +4,7 @@ import com.alibaba.dubbo.config.annotation.Service;
 import com.pinyougou.mapper.AddressMapper;
 import com.pinyougou.pojo.Address;
 import com.pinyougou.service.AddressService;
+import com.sun.tools.classfile.Exceptions_attribute;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
@@ -27,17 +28,33 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     public void save(Address address) {
-
+        try{
+            addressMapper.insertSelective(address);
+        }catch (Exception e){
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public void update(Address address) {
-
+        try{
+//            Example example = new Example(Address.class);
+//            Example.Criteria criteria = example.createCriteria();
+//            criteria.andEqualTo("id",address.getId());
+//            addressMapper.updateByExampleSelective(address,example);
+            addressMapper.updateByPrimaryKeySelective(address);
+        }catch (Exception e){
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public void delete(Serializable id) {
-
+        try {
+            addressMapper.deleteByPrimaryKey(id);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -78,4 +95,5 @@ public class AddressServiceImpl implements AddressService {
             throw new RuntimeException(ex);
         }
     }
+
 }

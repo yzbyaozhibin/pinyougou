@@ -9,7 +9,11 @@ app.controller('orderController', function ($scope, $controller, $interval, $loc
         baseService.sendGet("/order/findAddressByUser").then(function(response){
             // 获取响应数据
             $scope.addressList = response.data;
-
+            for(var i=0; i < $scope.addressList.length; i++){
+                if($scope.addressList[i].notes){
+                    $scope.addressList[i].notes=JSON.parse($scope.addressList[i].notes);
+                }
+            }
             // 获取默认的收件地址
             $scope.address = $scope.addressList[0];
         });
@@ -29,7 +33,57 @@ app.controller('orderController', function ($scope, $controller, $interval, $loc
     $scope.show = function (item) {
         /** 把json对象转化成一个新的json对象*/
         $scope.addressSave= JSON.parse(JSON.stringify(item));
-    }
+    };
+    /** 保存修改 */
+    $scope.saveOrUpdate=function (item) {
+        var url="saveAddress";
+        if (item.id){
+            url="updateAddress";
+        }
+        /** 发送post异步请求 */
+        baseService.sendPost("/order/"+url,item).then(
+            function (response) {
+                if (response.data){
+                    /** 清空表单 */
+                    $scope.addressSave = {};
+                    $scope.findAddressByUser();
+                }else {
+                    alert("保存失败！");
+                }
+            }
+        )
+    };
+    /** 清空添加的数据 */
+    $scope.clearAdd=function () {
+        $scope.addressSave = {};
+    };
+
+    /** 删除收货地址 */
+    $scope.deleteAddress=function (item) {
+        if (item.isDefault==1){
+            var i = $scope.addressList[1];
+            i.isDefault=1;
+            $scope.saveOrUpdate(i);
+        }
+        baseService.deleteById("/order/deleteAddress",item.id).then(
+            function (response) {
+                if (response.data){
+                    $scope.findAddressByUser()
+                }else {
+                    alert("删除失败！");
+                }
+            }
+        );
+    };
+
+    /** 修改默认地址 */
+    $scope.defaultAddress=function (item) {
+        var i = $scope.addressList[0];
+        i.isDefault=0;
+        $scope.saveOrUpdate(i);
+        item.isDefault = '1';
+        $scope.saveOrUpdate(item);
+    };
 
     // 定义数据封装的json对象
     $scope.order = {paymentType : '1'};
