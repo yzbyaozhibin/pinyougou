@@ -9,6 +9,17 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>pinyougou-user-service</artifactId>
     <packaging>war</packaging>
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.activemq</groupId>
+            <artifactId>activemq-client</artifactId>
+        </dependency>
+        <!-- spring-jms -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jms</artifactId>
+        </dependency>
+    </dependencies>
 
     <properties>
         <!-- 指定端口号 -->

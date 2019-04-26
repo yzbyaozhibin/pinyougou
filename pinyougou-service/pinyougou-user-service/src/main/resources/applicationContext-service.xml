@@ -17,6 +17,8 @@
     <!-- 导入redis配置文件(验证码需要存储到Redis) -->
     <import resource="classpath:applicationContext-redis.xml"/>
 
+    <import resource="classpath:applicationContext-jms.xml"/>
+
 
     <!--########### 配置Dubbo服务提供者 ############-->
     <!-- 配置当前应用的名称 -->

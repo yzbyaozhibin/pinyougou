@@ -57,4 +57,14 @@ public interface UserService {
 	List<Cities> findAllCitiesByProvinceId(String provinceId);
 
 	List<Areas> findAreasByCityId(String cityId);
+
+    String findUserPhoneByUserId(String userId);
+
+    void sendCode(String phone);
+
+    void saveVerifyPhone(String remoteUser, String aTrue);
+
+    Boolean VerifyPhone(String remoteUser, String aTrue);
+
+    void updatePhone(User user);
 }

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import sun.security.provider.MD5;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -174,5 +175,81 @@ public class UserController {
         }
         return null;
     }
+    @GetMapping("/findUserPhoneByUserId")
+    public String findUserPhoneByUserId(HttpServletRequest request){
+        try {
+            return userService.findUserPhoneByUserId(request.getRemoteUser());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @GetMapping("/judgeCode")
+    public Boolean judgeCode(String code,HttpServletRequest request){
+        try {
+            String ve = (String) request.getSession().getAttribute(VerifyController.VERIFY_CODE);
+            if (ve.equals(code)){
+                return true;
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    @GetMapping("/sendCode")
+    public Boolean sendCode(String phone){
+        try {
+            userService.sendCode(phone);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    @GetMapping("/checkSmsCode")
+    public Boolean checkSmsCode(String phone,String code,HttpServletRequest request){
+        try {
+           if(userService.checkSmsCode(phone, code)){
+               userService.saveVerifyPhone(request.getRemoteUser(),"true");
+                return true;
+            };
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    @GetMapping("/checkVerifyPhone")
+    public Boolean checkVerifyPhone(HttpServletRequest request){
+        try {
+            return userService.VerifyPhone(request.getRemoteUser(), "true");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    @GetMapping("/updatePhone")
+    public Boolean updatePhone(String phone,String code,HttpServletRequest request){
+        try {
+            if(userService.checkSmsCode(phone, code)){
+                User user = new User();
+                user.setPhone(phone);
+                user.setUsername(request.getRemoteUser());
+                user.setUpdated(new Date());
+                userService.updatePhone(user);
+                return true;
+            };
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+
 
 }

@@ -322,7 +322,7 @@ $(function(){
                     <div class="body userSafe">
                         <ul class="sui-nav nav-tabs nav-large nav-primary ">
                             <li class="active"><a href="#one" data-toggle="tab">密码设置</a></li>
-                            <li><a href="#two" data-toggle="tab">绑定手机</a></li>
+                            <li><a href="#two" data-toggle="tab" ng-click="findPhone()">绑定手机</a></li>
                         </ul>
                         <div class="tab-content ">
                             <div id="one" class="tab-pane active">
@@ -330,7 +330,7 @@ $(function(){
                                     <div class="control-group">
                                         <label for="inputusername" class="control-label">用户名：</label>
                                         <div class="controls">
-                                            <input value="{{loginName}}" type="text" disabled="disabled" id="pwdid" class="fn-tinput" data-rule-remote="http://www.baidu.com" name="OldPassword" placeholder="输入昵称"
+                                            <input value="{{loginName}}" id="inputusername" type="text" disabled="disabled" id="pwdid" class="fn-tinput" data-rule-remote="http://www.baidu.com" name="OldPassword" placeholder="输入昵称"
                                                 required data-msg-required="请输入昵称" minlength="6" data-msg-minlength="至少输入6个字符"
                                             />
 
@@ -338,20 +338,20 @@ $(function(){
                                     </div>
 
 									<div class="control-group">
-										<label for="inputPassword" class="control-label">原密码：</label>
+										<label  class="control-label">原密码：</label>
 										<div class="controls">
 											<input ng-model="user.oldPassword" class="fn-tinput" type="password" name="password" value="" placeholder="原密码" required id="password" data-rule-remote="php.php"> <span id="oldPasswordWarn"></span>
 										</div>
 									</div>
 
                                     <div class="control-group">
-                                        <label for="inputPassword" class="control-label">新密码：</label>
+                                        <label  class="control-label">新密码：</label>
                                         <div class="controls">
                                             <input  ng-model="user.newPassword" class="fn-tinput" type="password" name="password" value="" placeholder="新密码" required  data-rule-remote="php.php">
                                         </div>
                                     </div>
                                     <div class="control-group">
-                                        <label for="inputRepassword" class="control-label">确认密码：</label>
+                                        <label  class="control-label">确认密码：</label>
                                         <div class="controls">
                                             <input ng-model="rePassword" class="fn-tinput" type="password" name="confirm_password" value="" placeholder="确认新密码" required equalTo="#password"> <span id="rePasswordWarn"></span>
                                         </div>
@@ -390,29 +390,30 @@ $(function(){
                                 <form class="sui-form form-horizontal sui-validate" data-toggle='validate' id="bind-form">
 
                                     <div class="control-group">
-                                        <label for="inputPassword" class="control-label">验证方式：</label>
-                                        <div class="controls fixed">手机验证（138****9856）</div>                            
+                                        <label  class="control-label">验证方式：</label>
+                                        <div class="controls fixed">手机验证（{{phone}}）</div>
                                     </div>
                                      <div class="control-group">
-                                        <label for="inputcode" class="control-label">验证码：</label>
+                                        <label  class="control-label">验证码：</label>
                                         <div class="controls">
-                                            <input name="inputcode" type="text" id="inputcode">
+                                            <input type="text"  ng-model="vcode" ng-focus="changeVCodeWarn()">
                                         </div>
                                         <div class="controls">
-                                            验证码
+                                            <img src="/verify" onclick="this.src='/verify?a='+Math.random()">
                                         </div>
                                     </div>
                                     <div class="control-group">
-                                        <label for="inputRepassword" class="control-label">短信验证码：</label>
+                                        <label  class="control-label">短信验证码：</label>
                                         <div class="controls">
-                                            <input name="msgcode" type="text" id="msgcode">
+                                            <input type="text" ng-model="code" ng-focus="changeSmsCodeWarn()">
                                         </div>
                                         <div class="controls">
-                                            <button class="sui-btn btn-info">发送</button>
+                                            <button class="sui-btn btn-info" ng-click="sendCode()" ng-if="time <= 0">发送</button> <span id="codeWarn"></span>
+                                            <button class="sui-btn btn-info"  ng-if="time > 0" style="width: 50px" disabled>{{time}}</button>
                                         </div>
                                     </div>
                                     <div class="control-group next-btn">
-                                        <a class="sui-btn btn-primary" href="home-setting-address-phone.html">下一步</a>
+                                        <a class="sui-btn btn-primary" ng-click="next1()" >下一步</a> <span id="smsCodeWarn"></span>
                                     </div>
                                 </form>
                             </div>

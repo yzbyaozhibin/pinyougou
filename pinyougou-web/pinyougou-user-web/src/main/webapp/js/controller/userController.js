@@ -1,5 +1,5 @@
 /** 定义控制器层 */
-app.controller('userController', function($scope, $timeout, baseService,$controller){
+app.controller('userController', function($scope, $timeout,$interval, baseService,$controller){
     $controller('indexController',{$scope:$scope});
     // 定义user对象
     $scope.user = {};
@@ -138,5 +138,82 @@ app.controller('userController', function($scope, $timeout, baseService,$control
 
             })
         }
-    })
+    });
+
+
+    /*######################### 陈志杨的代码##################################*/
+    $scope.time = 0;
+    //获取手机号
+    $scope.findPhone=function () {
+        baseService.sendGet("/user/findUserPhoneByUserId").then(function (response) {
+            $scope.phone = response.data;
+
+        })
+    };
+
+    //发送验证码
+    $scope.sendCode=function () {
+        if(!$scope.vcode){
+            $("#codeWarn").html("验证码不能为空!");
+            return;
+        }
+        baseService.sendGet("/user/judgeCode?code="+$scope.vcode).then(function (response) {
+            if (response.data){
+                baseService.sendGet("/user/sendCode?phone="+$scope.phone).then(function (response) {
+                    if (response.data){
+                        $scope.timer();
+                    }
+                });
+            }else {
+                $("#codeWarn").html("验证码不正确!");
+            }
+        })
+    };
+
+    //清空验证码提醒信息
+    $scope.changeVCodeWarn=function () {
+        $("#codeWarn").html("");
+    };
+    //清空短信验证码提醒信息
+    $scope.changeSmsCodeWarn=function () {
+        $("#smsCodeWarn").html("");
+    };
+
+    //定时器
+    $scope.timer=function () {
+        $scope.time = 60;
+        $interval(function () {
+            $scope.time = $scope.time - 1;
+        },1000,60);
+    };
+
+    //下一步
+    $scope.next1=function () {
+        if(!$scope.code){
+            $("#smsCodeWarn").html("短信验证码不能为空!");
+            return;
+        }
+        baseService.sendGet("/user/checkSmsCode?phone="+$scope.phone+"&code="+$scope.code).then(function (response) {
+            if (response.data){
+                location.href="home-setting-address-phone.html";
+            }else {
+                $("#smsCodeWarn").html("短信验证码不正确!");
+            }
+        })
+    };
+
+    $scope.next2=function () {
+        if(!$scope.code){
+            $("#smsCodeWarn").html("短信验证码不能为空!");
+            return;
+        }
+        baseService.sendGet("/user/updatePhone?phone="+$scope.phone+"&code="+$scope.code).then(function (response) {
+            if (response.data){
+                location.href="home-setting-address-complete.html";
+            }else {
+                $("#smsCodeWarn").html("短信验证码不正确!");
+            }
+        })
+    };
+
 });
