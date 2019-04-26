@@ -1,10 +1,13 @@
 package com.pinyougou.mapper;
 
+import com.pinyougou.pojo.Provinces;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 import tk.mybatis.mapper.common.Mapper;
 
 import com.pinyougou.pojo.User;
+
+import java.util.List;
 
 /**
  * UserMapper 数据访问接口
@@ -19,5 +22,8 @@ public interface UserMapper extends Mapper<User>{
 
     @Select("select * from tb_user where username=#{username}")
     User selectUser(String username);
+
+    @Select("select * from tb_provinces")
+    List<Provinces> selectProvinces();
 
 }

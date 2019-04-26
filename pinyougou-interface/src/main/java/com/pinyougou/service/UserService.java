@@ -1,8 +1,13 @@
 package com.pinyougou.service;
 
+import com.pinyougou.pojo.Areas;
+import com.pinyougou.pojo.Cities;
+import com.pinyougou.pojo.Provinces;
 import com.pinyougou.pojo.User;
 import java.util.List;
 import java.io.Serializable;
+import java.util.Map;
+
 /**
  * UserService 服务接口
  * @date 2019-03-28 09:58:00
@@ -41,6 +46,11 @@ public interface UserService {
 
     void updatePassword(String newPassword,String username);
 
-//    String queryPassword(String loginName);
+    //查询所有省份
+	List<Provinces> findAllProvince();
 
+
+	List<Cities> findAllCitiesByProvinceId(String provinceId);
+
+	List<Areas> findAreasByCityId(String cityId);
 }

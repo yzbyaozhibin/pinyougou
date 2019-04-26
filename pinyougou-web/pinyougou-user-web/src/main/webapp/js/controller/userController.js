@@ -114,5 +114,29 @@ app.controller('userController', function($scope, $timeout, baseService,$control
     };
     $scope.changeAlias=function (alias) {
         $scope.addressSave.alias=alias;
-    }
+    };
+    //根据父级id查询地区
+    $scope.findAddressByParentId=function () {
+        baseService.sendGet("/user/findAddressByParentId").then(function (response) {
+            $scope.Provinces = response.data;
+        })
+    };
+
+   
+   $scope.$watch("addressSave.provinceId",function (newValue,oldValue) {
+        if($scope.addressSave.provinceId){
+            baseService.sendGet("/user/findCitiesByProvinceId?provinceId="+newValue).then(function (response) {
+                $scope.cities = response.data;
+            })
+        }
+    });
+
+    $scope.$watch("addressSave.cityId",function (newValue,oldValue) {
+        if($scope.addressSave.cityId){
+            baseService.sendGet("/user/findAreasByCityId?cityId="+newValue).then(function (response) {
+                $scope.areas = response.data;
+
+            })
+        }
+    })
 });

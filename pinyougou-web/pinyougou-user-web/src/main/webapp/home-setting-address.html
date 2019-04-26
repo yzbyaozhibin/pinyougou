@@ -222,7 +222,8 @@ $(function(){
                                         <td>{{item.address}}</td>
                                         <td>{{item.mobile}}</td>
                                         <td>
-                                            <a ng-click="showAddress(item)" href="#" data-toggle="modal" data-target=".edit" data-keyboard="false">编辑</a>
+                                            <a ng-click="showAddress(item);findAddressByParentId();"
+											   href="#" data-toggle="modal" data-target=".edit" data-keyboard="false">编辑</a>
                                             <a href="#">删除</a>
                                             <span ng-if="address.id == item.id">默认地址</span>
                                             <a href="JavaScript:;" ng-if="address.id != item.id">设为默认</a>
@@ -252,19 +253,18 @@ $(function(){
                                             <label class="control-label">所在地区：</label>
                                             <div class="controls">
                                                 <div data-toggle="distpicker">
-                                                <div class="form-group area">
-                                                    <select ng-options="p for p in addressSave" ng-model="addressSave.province" class="form-control" id="province1">
+                                                <div class="form-group area" >
+                                                    <select ng-model="addressSave.provinceId" ng-options="p.provinceId as p.province for p in Provinces" class="form-control" id="province1">
 														<option value="">==请选择省份==</option>
 													</select>
                                                 </div>
-
                                                 <div class="form-group area">
-                                                    <select ng-model="addressSave.cities" class="form-control" id="city1">
+                                                    <select ng-model="addressSave.cityId" ng-options="c.cityId as c.city for c in cities" class="form-control" id="city1">
 														<option value="">==请选择城市==</option>
 													</select>
                                                 </div>
                                                 <div class="form-group area">
-                                                    <select ng-model="addressSave.areas" class="form-control" id="district1">
+                                                    <select ng-model="addressSave.areaId" ng-options="a.areaId as a.area for a in areas" class="form-control" id="district1">
 														<option value="">==请选择区域==</option>
 													</select>
                                                 </div>
@@ -301,6 +301,7 @@ $(function(){
 												<a ng-click="changeAlias('公司')" href="#" class="sui-btn btn-default">公司</a>
                                             </div>
                                         </div>
+                                            {{addressSave}}
                                         
                                         </form>
                                         

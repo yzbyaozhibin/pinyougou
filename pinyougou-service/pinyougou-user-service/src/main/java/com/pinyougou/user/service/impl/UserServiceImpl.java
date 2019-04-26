@@ -3,7 +3,12 @@ package com.pinyougou.user.service.impl;
 import com.alibaba.dubbo.config.annotation.Service;
 import com.alibaba.fastjson.JSON;
 import com.pinyougou.common.util.HttpClientUtils;
+import com.pinyougou.mapper.AreasMapper;
+import com.pinyougou.mapper.CitiesMapper;
 import com.pinyougou.mapper.UserMapper;
+import com.pinyougou.pojo.Areas;
+import com.pinyougou.pojo.Cities;
+import com.pinyougou.pojo.Provinces;
 import com.pinyougou.pojo.User;
 import com.pinyougou.service.UserService;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -30,6 +35,10 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private CitiesMapper citiesMapper;
+    @Autowired
+    private AreasMapper areasMapper;
     @Value("${sms.url}")
     private String smsUrl;
     @Value("${sms.signName}")
@@ -141,7 +150,24 @@ public class UserServiceImpl implements UserService {
        User user = new User();
        user.setPassword(DigestUtils.md5Hex(newPassword));
        user.setUsername(username);
+       user.setUpdated(new Date());
         userMapper.updatePasswordByUsername(user);
     }
+
+    @Override
+    public List<Provinces> findAllProvince() {
+        return userMapper.selectProvinces();
+    }
+
+    @Override
+    public List<Cities> findAllCitiesByProvinceId(String provinceId) {
+        return citiesMapper.findAllCitiesByProvinceId(provinceId);
+    }
+
+    @Override
+    public List<Areas> findAreasByCityId(String cityId) {
+        return areasMapper.findAreasByCityId(cityId);
+    }
+
 
 }
