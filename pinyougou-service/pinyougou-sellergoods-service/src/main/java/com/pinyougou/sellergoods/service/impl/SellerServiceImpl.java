@@ -44,7 +44,11 @@ public class SellerServiceImpl implements SellerService {
 
     @Override
     public void update(Seller seller) {
-
+        try{
+        sellerMapper.updateByPrimaryKeySelective(seller);
+        }catch (Exception ex){
+            throw new RuntimeException(ex);
+        }
     }
 
     @Override
@@ -88,6 +92,19 @@ public class SellerServiceImpl implements SellerService {
     public void updateStatus(String sellerId, String status){
         try{
             sellerMapper.updateStatus(sellerId, status);
+        }catch (Exception ex){
+            throw new RuntimeException(ex);
+        }
+    }
+
+    //修改商家密码
+    @Override
+    public void updatePassword(String newPassword, String sellerId) {
+        try{
+            Seller seller = new Seller();
+            seller.setPassword(newPassword);
+            seller.setSellerId(sellerId);
+            sellerMapper.updatePasswordBySellerId(seller);
         }catch (Exception ex){
             throw new RuntimeException(ex);
         }

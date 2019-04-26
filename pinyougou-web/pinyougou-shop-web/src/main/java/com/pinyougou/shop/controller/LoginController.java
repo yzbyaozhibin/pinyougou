@@ -55,8 +55,7 @@ public class LoginController {
                     // 2.3 判断是否认证成功
                     if (authenticate.isAuthenticated()){
                         // 2.4 安全上下文设置认证对象
-                        SecurityContextHolder.getContext()
-                                .setAuthentication(authenticate);
+                        SecurityContextHolder.getContext().setAuthentication(authenticate);
 
                         return "redirect:/admin/index.html";
                     }
