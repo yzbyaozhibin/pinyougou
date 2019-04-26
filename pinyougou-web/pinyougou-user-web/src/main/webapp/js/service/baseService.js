@@ -55,7 +55,7 @@ app.service('baseService', function($http){
         // 第一个参数：请求参数名称
         // 第二个参数：取html页面中第一个file元素
         // 表单数据对象追加上传的文件
-        formData.append("file", file.files[0]);
+        formData.append("file", up_img_WU_FILE_0.files[0]);
         // 发送异步请求
         return $http({
             method : 'post', // 请求方式

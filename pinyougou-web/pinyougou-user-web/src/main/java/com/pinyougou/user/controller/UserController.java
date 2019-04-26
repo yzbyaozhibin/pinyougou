@@ -7,10 +7,16 @@ import com.pinyougou.pojo.Provinces;
 import com.pinyougou.pojo.User;
 import com.pinyougou.service.UserService;
 import org.apache.commons.codec.digest.DigestUtils;
+import com.pinyougou.service.*;
 import org.springframework.web.bind.annotation.*;
 import sun.security.provider.MD5;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +34,13 @@ public class UserController {
 
     @Reference(timeout = 10000)
     private UserService userService;
+
+    @Reference(timeout = 10000)
+    private ProvincesService provincesService;
+    @Reference(timeout = 10000)
+    private CitiesService citiesService;
+    @Reference(timeout = 10000)
+    private AreasService areasService;
 
     /** 用户注册 */
     @PostMapping("/save")
@@ -51,6 +64,63 @@ public class UserController {
     public boolean sendSmsCode(String phone){
         try{
             return userService.sendSmsCode(phone);
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
+        return false;
+    }
+
+    @GetMapping("/findUserByUsername")
+    public Map<String,Object> findUserByUsername(String username){
+        Map<String,Object > map = new HashMap<>();
+        try{
+            User user = userService.findUserByUsername(username);
+            map.put("user",user);
+
+            map.put("birthdayString",new SimpleDateFormat("yyyy-MM-dd").format(user.getBirthday()));
+            return map;
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
+        return null;
+    }
+
+    @GetMapping("/findProvincesList")
+    public List<Provinces> findProvincesList(){
+        try{
+            return provincesService.findAll();
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
+        return null;
+    }
+
+    @GetMapping("/findCitiesList")
+    public List<Cities> findCitiesList(String provinceId){
+        try{
+            System.out.println(provinceId);
+            return citiesService.findByProvinceId(provinceId);
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
+        return null;
+    }
+
+    @GetMapping("/findAreasList")
+    public List<Areas> findAreasList(String cityId){
+        try{
+            return areasService.findByCityId(cityId);
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
+        return null;
+    }
+
+    @PostMapping("/saveUser")
+    public Boolean saveUser(@RequestBody User entity){
+        try{
+            userService.saveUser(entity);
+            return true;
         }catch (Exception ex){
             ex.printStackTrace();
         }

@@ -65,6 +65,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public void saveUser(User user){
+        try{
+            User u = new User();
+            u.setUsername(user.getUsername());
+            User user1 = userMapper.selectOne(u);
+            user.setId(user1.getId());
+            userMapper.updateByPrimaryKeySelective(user);
+        }catch(Exception ex){
+            throw new RuntimeException(ex);
+        }
+    }
+
+    @Override
     public void update(User user) {
 
     }
@@ -135,6 +148,17 @@ public class UserServiceImpl implements UserService {
         try{
             String oldCode = (String)redisTemplate.boundValueOps(phone).get();
             return code.equals(oldCode);
+        }catch (Exception ex){
+            throw new RuntimeException(ex);
+        }
+    }
+
+    @Override
+    public User findUserByUsername(String username) {
+        try{
+            User user = new User();
+            user.setUsername(username);
+            return userMapper.selectOne(user);
         }catch (Exception ex){
             throw new RuntimeException(ex);
         }
