@@ -26,7 +26,7 @@ app.controller('cartController', function ($scope, $controller, baseService) {
         baseService.sendGet("/cart/addCart?itemId="
             + itemId + "&num=" + num).then(function (response) {
             $scope.carts = response.data;
-            $scope.findCartList()
+            $scope.findCartList();
         });
     };
     $scope.focus = function (num) {
@@ -50,6 +50,9 @@ app.controller('cartController', function ($scope, $controller, baseService) {
 
     //定义总金额
     $scope.stf="0.00";
+
+    //定义存储删除订单列表
+    $scope.deletedOrderItems=[];
 
     //往购物车订单里加订单
     $scope.addOrderCart = function (x, y, event) {
@@ -135,8 +138,12 @@ app.controller('cartController', function ($scope, $controller, baseService) {
         $scope.stf=$scope.stf.substring(0,$scope.stf.indexOf(".")+3);
     };
 
-    //往后台存需要清空的购物车清单
+    //结算
     $scope.addCartOrders = function () {
+        if ($scope.orderCarts == null || $scope.orderCarts.length <1  ){
+            alert("请选择要结算的商品");
+            return;
+        }
         baseService.sendPost("/cart/addCartOrders",$scope.orderCarts).then(function (response) {
             if (response.data.success){
                 location.href="/order/getOrderInfo.html";
@@ -145,6 +152,39 @@ app.controller('cartController', function ($scope, $controller, baseService) {
             }
         });
     };
+    //单个删除
+    $scope.deleteOne=function (itemId,num,item) {
+        $scope.addCart(itemId,num);
+        $scope.deletedOrderItems.push(item);
+    };
+
+    //清除选中的订单
+    $scope.deleteSelected=function () {
+        var maps = [];
+        for (var i = 0; i < $scope.orderCarts.length; i++) {
+            for (var j = 0; j < $scope.orderCarts[i].orderItems.length; j++) {
+                $scope.tf+=$scope.orderCarts[i].orderItems[j].totalFee;
+                maps.push({"itemId":""+$scope.orderCarts[i].orderItems[j].itemId,"num":""+$scope.orderCarts[i].orderItems[j].num});
+                $scope.deletedOrderItems.push($scope.orderCarts[i].orderItems[j]);
+            }
+        }
+        baseService.sendPost("/cart/deleteSelected",maps).then(function (response) {
+            if(response.data){
+                $scope.findCartList();
+            }
+        });
+        $.each($("input[type=checkbox]"), function (k, v) {
+                $(v).prop("checked", false);
+        });
+        $scope.orderCarts = [];
+        $scope.stf="0.00";
+    };
+
+    //重新购买
+    $scope.buyAgain=function (itemId,num,index) {
+        $scope.addCart(itemId,num);
+        $scope.deletedOrderItems.splice(index,1);
+    }
 });
 
 

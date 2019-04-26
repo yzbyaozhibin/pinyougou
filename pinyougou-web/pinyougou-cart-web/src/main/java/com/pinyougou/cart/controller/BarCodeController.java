@@ -74,7 +74,7 @@ public class BarCodeController {
 		for (int x = 0; x < matrix_width; x++){
 			for (int y = 0; y < matrix_height; y++){
 				/** 通过x、y坐标获取一点的颜色 true: 黑色  false: 白色 */
-				int rgb = matrix.get(x, y) ? 0xff1cae : 0xFFFFFF;
+				int rgb = matrix.get(x, y) ? 0x000000 : 0xFFFFFF;
 				image.setRGB(x, y, rgb);
 			}
 		}

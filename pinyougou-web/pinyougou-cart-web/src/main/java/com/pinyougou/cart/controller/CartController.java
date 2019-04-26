@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * 购物车控制器
@@ -141,6 +142,7 @@ public class CartController {
         map.put("message","网络异常");
         return map;
     }
+
     @GetMapping("/findCartOrders")
     public List<Cart> findCartOrders(){
         try {
@@ -149,6 +151,22 @@ public class CartController {
         } catch (Exception e) {
             e.printStackTrace();
             return null;
+        }
+    }
+    @PostMapping("/deleteSelected")
+    public boolean deleteSelected( @RequestBody List<Map<String,String>> maps){
+        try {
+            for (Map<String, String> map : maps) {
+                Long itemId = Long.valueOf(map.get("itemId")) ;
+                Integer num = Integer.valueOf(map.get("num"));
+                if (!addCart(itemId,-num)){
+                    return false;
+                }
+            }
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
         }
     }
 

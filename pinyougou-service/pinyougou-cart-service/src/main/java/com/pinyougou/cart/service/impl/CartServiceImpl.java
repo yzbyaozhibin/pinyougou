@@ -12,7 +12,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 购物车服务接口实现类
@@ -206,9 +208,12 @@ public class CartServiceImpl implements CartService {
                     for (int k = 0; k < cartsCopy.size(); k++) {
                         for (int l = 0; l < cartsCopy.get(k).getOrderItems().size(); l++) {
                             if (cartOrder.getOrderItems().get(j).getItemId().longValue() == cartsCopy.get(k).getOrderItems().get(l).getItemId().longValue()) {
-                                carts.get(k).getOrderItems().remove(l);
-                                if (carts.get(k).getOrderItems().size() == 0) {
-                                    carts.remove(k);
+                                Map<String, Object> map = searchCartByOrderItem(carts, cartsCopy.get(k).getOrderItems().get(l).getItemId().longValue());
+                                assert map != null;
+                                Cart cart = (Cart) map.get("cart");
+                                cart.getOrderItems().remove(map.get("orderItem"));
+                                if (cart.getOrderItems().size() <= 0) {
+                                    carts.remove(cart);
                                 }
                             }
                         }
@@ -220,6 +225,22 @@ public class CartServiceImpl implements CartService {
         }catch (Exception ex){
             throw new RuntimeException(ex);
         }
+    }
+
+    private Map<String, Object> searchCartByOrderItem(List<Cart> carts, long itemId) {
+        Map<String, Object> map = new HashMap<>();
+        // 迭代用户的购物车集合
+        for (Cart cart : carts) {
+            for (OrderItem orderItem : cart.getOrderItems()) {
+                if (orderItem.getItemId().longValue() == itemId ){
+                    map.put("cart",cart);
+                    map.put("orderItem",orderItem);
+
+                    return map ;
+                }
+            }
+        }
+        return null;
     }
 
     public List<Cart> findCartOrdersFromRedis(String userId){
