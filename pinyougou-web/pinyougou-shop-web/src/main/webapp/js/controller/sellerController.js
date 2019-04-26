@@ -79,31 +79,37 @@ app.controller('sellerController', function($scope, $controller, baseService){
     //定义一个空的usre对象
     $scope.user={};
     $scope.changePassword = function () {
-        if ($scope.user.newPassword != $scope.user.rePassword){
-            alert("输入的两次密码前后不一致!!!");
-            $scope.user.newPassword = "";
-            $scope.user.rePassword  = "";
+        if($scope.user.newPassword && $scope.user.rePassword){
+            if ($scope.user.newPassword != $scope.user.rePassword){
+                alert("输入的两次密码前后不一致!!!");
+                $scope.user.newPassword = "";
+                $scope.user.rePassword  = "";
                 return;
-        }
-        if ($scope.user.oldPassword){
-            baseService.sendPost("/seller/changePassword",$scope.user).then(function (response) {
-                if (response.data){
-                    alert("修改成功!");
-                    $scope.user.oldPassword = "";
-                    $scope.user.newPassword = "";
-                    $scope.user.rePassword  = "";
-                    location.href="http://shop.pinyougou.com/logout";
+            }else {
+                if ($scope.user.oldPassword){
+                    baseService.sendPost("/seller/changePassword",$scope.user).then(function (response) {
+                        if (response.data){
+                            alert("修改成功!");
+                            $scope.user.oldPassword = "";
+                            $scope.user.newPassword = "";
+                            $scope.user.rePassword  = "";
+                            location.href="http://shop.pinyougou.com/logout";
 
+                        }else {
+                            alert("输入的原密码有误,请重新输入");
+                            $scope.user.oldPassword = "";
+                            $scope.user.newPassword = "";
+                            $scope.user.rePassword  = "";
+                        }
+                    });
                 }else {
-                    alert("输入的原密码有误,请重新输入");
-                    $scope.user.oldPassword = "";
-                    $scope.user.newPassword = "";
-                    $scope.user.rePassword  = "";
+                    alert("请输入原密码!")
                 }
-            });
+            }
         }else {
-           alert("请输入原密码!")
+            alert("输入的两次密码前后不一致!!!");
         }
+
     };
 
     //重置密码
@@ -111,5 +117,51 @@ app.controller('sellerController', function($scope, $controller, baseService){
         $scope.user.oldPassword = "";
         $scope.user.newPassword = "";
         $scope.user.rePassword  = "";
+    };
+
+
+    //文本1框显示密码与隐藏
+    $scope.showpwd1 = function () {
+        var pwdNum1 =document.getElementById("oldPassword");
+        var icon1 =document.getElementById("icon1");
+        if (pwdNum1.getAttribute("type") == "password"){
+            pwdNum1.setAttribute("type","text");
+            icon1.setAttribute("class","fa fa-eye-slash");
+            icon1.style.color="red";
+        }else {
+            pwdNum1.setAttribute("type","password");
+            icon1.setAttribute("class","fa fa-eye");
+            icon1.style.color="blue";
+        }
+    };
+
+    //文本2框显示密码与隐藏
+    $scope.showpwd2 = function () {
+        var pwdNum2 =document.getElementById("newPassword");
+        var icon2 =document.getElementById("icon2");
+        if (pwdNum2.getAttribute("type") == "password"){
+            pwdNum2.setAttribute("type","text");
+            icon2.setAttribute("class","fa fa-eye-slash");
+            icon2.style.color="red";
+        }else {
+            pwdNum2.setAttribute("type","password");
+            icon2.setAttribute("class","fa fa-eye");
+            icon2.style.color="blue";
+        }
+    };
+
+    //文本3框显示密码与隐藏
+    $scope.showpwd3 = function () {
+        var pwdNum3 =document.getElementById("rePassword");
+        var icon3 =document.getElementById("icon3");
+        if (pwdNum3.getAttribute("type") == "password"){
+            pwdNum3.setAttribute("type","text");
+            icon3.setAttribute("class","fa fa-eye-slash");
+            icon3.style.color="red";
+        }else {
+            pwdNum3.setAttribute("type","password");
+            icon3.setAttribute("class","fa fa-eye");
+            icon3.style.color="blue";
+        }
     };
 });
