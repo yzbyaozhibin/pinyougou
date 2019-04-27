@@ -55,6 +55,22 @@ public interface UserService {
 
 	List<Areas> findAreasByCityId(String cityId);
 
+	//修改地址的方法
+    void updateAddress(Address address);
+
+    //保存地址的方法
+    void saveAddress(Address address);
+
+    //删除地址的方法
+    void deleteAddress(Long id);
+
+//    //修改默认地址为1改成0
+//    Boolean updateDefaultAddressOld();
+//
+//    //修改默认地址为0改成1
+//    void updateDefaultAddressNew(String isDefault, Long id);
+
+
     String findUserPhoneByUserId(String userId);
 
     void sendCode(String phone);

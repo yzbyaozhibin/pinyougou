@@ -42,6 +42,8 @@ public class UserServiceImpl implements UserService {
     private CitiesMapper citiesMapper;
     @Autowired
     private AreasMapper areasMapper;
+    @Autowired
+    private AddressMapper addressMapper;
     @Value("${sms.url}")
     private String smsUrl;
     @Value("${sms.signName}")
@@ -204,6 +206,32 @@ public class UserServiceImpl implements UserService {
         return areasMapper.findAreasByCityId(cityId);
     }
 
+    @Override
+    public void updateAddress(Address address) {
+        try {
+            addressMapper.updateByPrimaryKey(address);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    //保存地址的方法
+    @Override
+    public void saveAddress(Address address) {
+        try {
+            address.setIsDefault("0");
+            address.setCreateDate(new Date());
+            addressMapper.insertSelective(address);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void deleteAddress(Long id) {
+        addressMapper.deleteAddress(id);
+    }
     @Override
     public String findUserPhoneByUserId(String userId) {
         return userMapper.findUserPhoneByUserId(userId);
