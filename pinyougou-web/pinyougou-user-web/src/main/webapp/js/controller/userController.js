@@ -1,6 +1,4 @@
 /** 定义控制器层 */
-app.controller('userController', function ($scope, $timeout, baseService, $controller) {
-    $controller('indexController', {$scope: $scope});
 app.controller('userController', function($scope, $timeout,$interval, baseService,$controller){
     $controller('indexController',{$scope:$scope});
     // 定义user对象
@@ -23,7 +21,7 @@ app.controller('userController', function($scope, $timeout,$interval, baseServic
                     }
                 });
 
-        } else {
+        }else{
             alert("两次密码不一致！");
         }
     };
@@ -130,9 +128,7 @@ app.controller('userController', function($scope, $timeout,$interval, baseServic
     };
 
 
-    $scope.$watch("addressSave.provinceId", function (newValue, oldValue) {
-        if ($scope.addressSave) {
-            baseService.sendGet("/user/findCitiesByProvinceId?provinceId=" + newValue).then(function (response) {
+
 
    $scope.$watch("addressSave.provinceId",function (newValue,oldValue) {
         if($scope.addressSave){
@@ -143,10 +139,7 @@ app.controller('userController', function($scope, $timeout,$interval, baseServic
         }
     });
 
-    $scope.$watch("addressSave.cityId", function (newValue, oldValue) {
-        if ($scope.addressSave) {
-            baseService.sendGet("/user/findAreasByCityId?cityId=" + newValue).then(function (response) {
-    $scope.$watch("addressSave.cityId",function (newValue,oldValue) {
+      $scope.$watch("addressSave.cityId",function (newValue,oldValue) {
         if($scope.addressSave){
             baseService.sendGet("/user/findAreasByCityId?cityId="+newValue).then(function (response) {
                 $scope.areas = response.data;
@@ -154,9 +147,7 @@ app.controller('userController', function($scope, $timeout,$interval, baseServic
         }
     });
 
-            })
-        }
-    });
+
 
 
     /*######################### 陈志杨的代码##################################*/

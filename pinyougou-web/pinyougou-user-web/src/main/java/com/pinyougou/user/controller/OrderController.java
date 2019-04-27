@@ -17,7 +17,7 @@ public class OrderController {
 
     @GetMapping("/findOrders")
     public List<Map<String,Object>> findOrders(Long num,Long size,HttpServletRequest request){
-        return orderService.findAllOrderByUserId(request.getRemoteUser(),num,size);
+        return orderService.findAllOrderByUserId(request.getRemoteUser());
     }
 
     @PostMapping("/pay")
