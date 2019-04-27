@@ -1,9 +1,6 @@
 package com.pinyougou.service;
 
-import com.pinyougou.pojo.Areas;
-import com.pinyougou.pojo.Cities;
-import com.pinyougou.pojo.Provinces;
-import com.pinyougou.pojo.User;
+import com.pinyougou.pojo.*;
 import java.util.List;
 import java.io.Serializable;
 import java.util.Map;
@@ -57,6 +54,22 @@ public interface UserService {
 	List<Cities> findAllCitiesByProvinceId(String provinceId);
 
 	List<Areas> findAreasByCityId(String cityId);
+
+	//修改地址的方法
+    void updateAddress(Address address);
+
+    //保存地址的方法
+    void saveAddress(Address address);
+
+    //删除地址的方法
+    void deleteAddress(Long id);
+
+//    //修改默认地址为1改成0
+//    Boolean updateDefaultAddressOld();
+//
+//    //修改默认地址为0改成1
+//    void updateDefaultAddressNew(String isDefault, Long id);
+
 
     String findUserPhoneByUserId(String userId);
 
