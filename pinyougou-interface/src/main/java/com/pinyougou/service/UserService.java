@@ -64,7 +64,7 @@ public interface UserService {
 
     void saveVerifyPhone(String remoteUser, String aTrue);
 
-    Boolean VerifyPhone(String remoteUser, String aTrue);
+    Boolean verifyPhone(String remoteUser, String aTrue);
 
     void updatePhone(User user);
 }

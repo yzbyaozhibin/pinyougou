@@ -241,7 +241,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Boolean VerifyPhone(String remoteUser, String aTrue) {
+    public Boolean verifyPhone(String remoteUser, String aTrue) {
         String b = (String) redisTemplate.boundValueOps("VerifyPhone_" + remoteUser).get();
         return aTrue.equals(b);
     }

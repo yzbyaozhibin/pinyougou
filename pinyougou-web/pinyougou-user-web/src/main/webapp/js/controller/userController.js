@@ -124,7 +124,7 @@ app.controller('userController', function($scope, $timeout,$interval, baseServic
 
    
    $scope.$watch("addressSave.provinceId",function (newValue,oldValue) {
-        if($scope.addressSave.provinceId){
+        if($scope.addressSave){
             baseService.sendGet("/user/findCitiesByProvinceId?provinceId="+newValue).then(function (response) {
                 $scope.cities = response.data;
             })
@@ -132,7 +132,7 @@ app.controller('userController', function($scope, $timeout,$interval, baseServic
     });
 
     $scope.$watch("addressSave.cityId",function (newValue,oldValue) {
-        if($scope.addressSave.cityId){
+        if($scope.addressSave){
             baseService.sendGet("/user/findAreasByCityId?cityId="+newValue).then(function (response) {
                 $scope.areas = response.data;
 
@@ -208,12 +208,30 @@ app.controller('userController', function($scope, $timeout,$interval, baseServic
             return;
         }
         baseService.sendGet("/user/updatePhone?phone="+$scope.phone+"&code="+$scope.code).then(function (response) {
-            if (response.data){
+            if (response.data.success){
                 location.href="home-setting-address-complete.html";
             }else {
-                $("#smsCodeWarn").html("短信验证码不正确!");
+                $("#smsCodeWarn").html(response.data.message);
             }
         })
     };
+
+    //查询有订单
+    $scope.findAllOrder=function () {
+        baseService.sendGet("/order/findOrders").then(function (response) {
+            $scope.orders=response.data;
+        })
+    };
+
+    //支付款
+    $scope.pay=function(orderMap){
+        baseService.sendPost("/order/pay?totalFee="+orderMap.totalFee,orderMap.order).then(function (response) {
+            if (response.data){
+                location.href="http://cart.pinyougou.com/order/pay.html";
+            }else {
+                alert("异常")
+            }
+        })
+    }
 
 });
