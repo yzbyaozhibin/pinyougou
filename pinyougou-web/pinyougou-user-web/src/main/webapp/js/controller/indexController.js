@@ -5,7 +5,15 @@ app.controller('indexController', function($scope, baseService){
         baseService.sendGet("/user/showName")
             .then(function(response){
                 $scope.loginName = response.data.loginName;
+                $scope.findUserByLoginName();
             });
     };
-
+    $scope.findUserByLoginName = function () {
+        baseService.sendGet("/user/findUserByUsername?username=" + $scope.loginName)
+            .then(function (response) {
+                $scope.entity = response.data.user;
+                $scope.entity.birthday=response.data.birthdayString;
+                $scope.entity.address = JSON.parse($scope.entity.address);
+            });
+    };
 });

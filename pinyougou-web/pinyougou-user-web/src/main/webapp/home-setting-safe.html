@@ -285,7 +285,7 @@ $(function(){
                 <div class="yui3-u-1-6 list">
 
                     <div class="person-info">
-                        <div class="person-photo"><img src="img/_/photo.png" alt=""></div>
+                        <div class="person-photo"><img ng-src="{{entity.headPic}}" style="width:40px;height:40px;" alt=""></div>
                         <div class="person-account">
                             <span class="name">{{loginName}}</span>
                             <span class="safe"><a href="/logout">退出登录 </a></span>
@@ -399,7 +399,7 @@ $(function(){
                                             <input type="text"  ng-model="vcode" ng-focus="changeVCodeWarn()">
                                         </div>
                                         <div class="controls">
-                                            <img src="/verify" onclick="this.src='/verify?a='+Math.random()">
+                                            <img src="/verify" onclick="this.src='/verify?a='+Math.random()" title="太模糊?点击图片刷新">
                                         </div>
                                     </div>
                                     <div class="control-group">

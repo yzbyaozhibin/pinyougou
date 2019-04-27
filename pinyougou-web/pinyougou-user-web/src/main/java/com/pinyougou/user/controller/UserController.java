@@ -1,10 +1,7 @@
 package com.pinyougou.user.controller;
 
 import com.alibaba.dubbo.config.annotation.Reference;
-import com.pinyougou.pojo.Areas;
-import com.pinyougou.pojo.Cities;
-import com.pinyougou.pojo.Provinces;
-import com.pinyougou.pojo.User;
+import com.pinyougou.pojo.*;
 import com.pinyougou.service.UserService;
 import org.apache.commons.codec.digest.DigestUtils;
 import com.pinyougou.service.*;
@@ -83,7 +80,30 @@ public class UserController {
         }
         return null;
     }
+    //修改的方法
+    @PostMapping("/updateAddress")
+    public Boolean updateAddress(@RequestBody Address address){
+        try {
+            userService.updateAddress(address);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+    //保存的方法
 
+    @PostMapping("/saveAddress")
+    public Boolean saveAddress(@RequestBody Address address,HttpServletRequest request){
+        try {
+            address.setUserId(request.getRemoteUser());
+            userService.saveAddress(address);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
     @GetMapping("/findProvincesList")
     public List<Provinces> findProvincesList(){
         try{
@@ -93,7 +113,16 @@ public class UserController {
         }
         return null;
     }
-
+    @GetMapping("/deleteAddress")
+    public Boolean deleteAddress(Long id){
+        try {
+            userService.deleteAddress(id);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
     @GetMapping("/findCitiesList")
     public List<Cities> findCitiesList(String provinceId){
         try{

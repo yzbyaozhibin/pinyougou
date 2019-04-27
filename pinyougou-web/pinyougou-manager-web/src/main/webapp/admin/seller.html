@@ -214,9 +214,9 @@
                     <!-- 选项卡结束 -->
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-success" data-dismiss="modal" aria-hidden="true" ng-if="seller.status != 1" ng-click="check(seller,1)" onclick="off.click()">审核通过</button>
-                    <button class="btn btn-danger" data-dismiss="modal" aria-hidden="true" ng-if="seller.status != 2" ng-click="check(seller,2)" onclick="off.click()">审核未通过</button>
-                    <button class="btn btn-danger" data-dismiss="modal" aria-hidden="true" ng-if="seller.status != 3" ng-click="check(seller,3)" onclick="off.click()">关闭商家</button>
+                    <button class="btn btn-success" data-dismiss="modal" aria-hidden="true" ng-if="seller.status != 1" ng-click="updateStatus(entity.sellerId, '1')" onclick="off.click()">审核通过</button>
+                    <button class="btn btn-danger" data-dismiss="modal" aria-hidden="true" ng-if="seller.status != 2" ng-click="updateStatus(entity.sellerId, '2')" onclick="off.click()">审核未通过</button>
+                    <button class="btn btn-danger" data-dismiss="modal" aria-hidden="true" ng-if="seller.status != 3" ng-click="updateStatus(entity.sellerId, '3')" onclick="off.click()">关闭商家</button>
                     <button class="btn btn-default" data-dismiss="modal" aria-hidden="true" id="off">关闭</button>
                 </div>
             </div>

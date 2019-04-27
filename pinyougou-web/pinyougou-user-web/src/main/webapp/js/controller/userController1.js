@@ -7,19 +7,19 @@ app.controller('userController', function($scope, $timeout,$interval, baseServic
     $scope.save = function () {
 
         // 判断两次密码是否一致
-        if ($scope.okPassword && $scope.user.password == $scope.okPassword) {
+        if ($scope.okPassword && $scope.user.password == $scope.okPassword){
             // 发送异步请求
             baseService.sendPost("/user/save?code=" + $scope.code, $scope.user)
-                .then(function (response) {
-                    if (response.data) {
-                        // 清空表单数据
-                        $scope.user = {};
-                        $scope.okPassword = "";
-                        $scope.code = "";
-                    } else {
-                        alert("注册失败！");
-                    }
-                });
+                .then(function(response){
+                if (response.data){
+                    // 清空表单数据
+                    $scope.user = {};
+                    $scope.okPassword = "";
+                    $scope.code = "";
+                }else{
+                    alert("注册失败！");
+                }
+            });
 
         }else{
             alert("两次密码不一致！");
@@ -27,23 +27,25 @@ app.controller('userController', function($scope, $timeout,$interval, baseServic
     };
 
 
+
+
     // 发送短信验证码
     $scope.sendSmsCode = function () {
 
         // 判断手机号码
-        if ($scope.user.phone && /^1[3|4|5|7|8]\d{9}$/.test($scope.user.phone)) {
+        if ($scope.user.phone && /^1[3|4|5|7|8]\d{9}$/.test($scope.user.phone)){
             // 发送异步请求
             baseService.sendGet("/user/sendSmsCode?phone=" + $scope.user.phone)
-                .then(function (response) {
-                    if (response.data) {
-                        // 调用倒计时方法
-                        $scope.downcount(90);
+                .then(function(response){
+                if (response.data){
+                    // 调用倒计时方法
+                    $scope.downcount(90);
 
-                    } else {
-                        alert("发送失败！");
-                    }
-                });
-        } else {
+                }else{
+                    alert("发送失败！");
+                }
+            });
+        }else {
             alert("手机号码格式不正确！")
         }
     };
@@ -57,41 +59,39 @@ app.controller('userController', function($scope, $timeout,$interval, baseServic
 
         seconds--;
 
-        if (seconds >= 0) {
+        if (seconds >= 0){
             $scope.smsTip = seconds + "秒后，重新获取！";
             $scope.disabled = true;
             // 第一个参数：回调的函数
             // 第二个参数：间隔的时间毫秒数
-            $timeout(function () {
+            $timeout(function(){
                 $scope.downcount(seconds);
             }, 1000);
-        } else {
+        }else {
             $scope.smsTip = "获取短信验证码";
             $scope.disabled = false;
         }
 
     };
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    $scope.addressSave={notes:[]};
+
     //判断用户原密码是否正确
-    $scope.changePassword = function () {
-        if ($scope.user.newPassword == $scope.rePassword && $scope.user.newPassword) {
-            if ($scope.user.oldPassword) {
-                baseService.sendPost("/user/codePassword", $scope.user).then(function (response) {
-                    if (response.data == true) {
-                        $scope.user = {};
-                        $scope.rePassword = "";
-                        alert("修改密码成功,请重新登录!");
-                        location.href="http://sso.pinyougou.com/logout?service=http://user.pinyougou.com";
-                    } else {
+    $scope.changePassword=function () {
+        if($scope.user.newPassword == $scope.rePassword && $scope.user.newPassword){
+            if ($scope.user.oldPassword ){
+                baseService.sendPost("/user/codePassword",$scope.user).then(function (response) {
+                    if (response.data == true){
+                        alert("修改成功");
+                        $scope.user={};
+                        $scope.rePassword="";
+                    }else {
                         $("#oldPasswordWarn").html("原密码错误!");
                     }
                 })
-            } else {
+            }else {
                 $("#oldPasswordWarn").html("密码不能为空!");
             }
-        } else {
+        }else {
             $("#rePasswordWarn").html("修改的密码有误!");
             return;
         }
@@ -99,57 +99,46 @@ app.controller('userController', function($scope, $timeout,$interval, baseServic
     // 获取收件人地址列表
     $scope.findAddressByUser = function () {
         // 发送异步请求
-        baseService.sendGet("/address/findAddressByUser").then(function (response) {
+        baseService.sendGet("/address/findAddressByUser").then(function(response){
             // 获取响应数据
             $scope.addressList = response.data;
-            for (var i=0;i<$scope.addressList.length;i++){
-                if ($scope.addressList[i].notes){
-                    $scope.addressList[i].notes=JSON.parse($scope.addressList[i].notes);
-                }else {
-                    $scope.addressList[i].notes=[{"email":"1"}];
-                }
-            }
+
             // 获取默认的收件地址
             $scope.address = $scope.addressList[0];
         });
     };
 
     //显示详细地址
-    $scope.showAddress = function (item) {
-        $scope.addressSave = item;
+    $scope.showAddress=function (item) {
+        $scope.addressSave=item;
     };
-
-    $scope.changeAlias = function (alias) {
-        $scope.addressSave.alias = alias;
+    $scope.changeAlias=function (alias) {
+        $scope.addressSave.alias=alias;
     };
     //根据父级id查询地区
-    $scope.findAddressByParentId = function () {
+    $scope.findAddressByParentId=function () {
         baseService.sendGet("/user/findAddressByParentId").then(function (response) {
             $scope.Provinces = response.data;
         })
     };
 
-
-
-
+   
    $scope.$watch("addressSave.provinceId",function (newValue,oldValue) {
         if($scope.addressSave){
             baseService.sendGet("/user/findCitiesByProvinceId?provinceId="+newValue).then(function (response) {
                 $scope.cities = response.data;
-                $scope.araes = [];
             })
         }
     });
 
-      $scope.$watch("addressSave.cityId",function (newValue,oldValue) {
+    $scope.$watch("addressSave.cityId",function (newValue,oldValue) {
         if($scope.addressSave){
             baseService.sendGet("/user/findAreasByCityId?cityId="+newValue).then(function (response) {
                 $scope.areas = response.data;
+
             })
         }
     });
-
-
 
 
     /*######################### 陈志杨的代码##################################*/
@@ -244,62 +233,7 @@ app.controller('userController', function($scope, $timeout,$interval, baseServic
             }
         })
     };
-
-    //编辑修改地址
-    $scope.updateOrSaveAddress = function (addressSave) {
-        if (addressSave != null) {
-            if(addressSave.contact){
-                if(addressSave.townId && addressSave.address){
-                    if(addressSave.mobile){
-                        if (addressSave.id) {
-                            baseService.sendPost("/user/updateAddress", addressSave).then(function (response) {
-                                if (response.data == true) {
-                                   location.href="/home-setting-address.html";
-                            }
-                            })
-                        } else {
-                            baseService.sendPost("/user/saveAddress", addressSave).then(function (response) {
-                                if (response.data == true) {
-                                    location.href="/home-setting-address.html";
-                                }
-                            })
-                        }
-                    }else{
-                        $("#phone").html("手机号码有误!");
-                        alert("操作失败,请重试")
-                    }
-                }else {
-                    alert("地址不完整!")
-                }
-            }else {
-                 $("#contact").html("收件人不能为空!");
-                alert("操作失败,请重试")
-            }
-        }
-    };
-
-    //新添地址
-    $scope.createAddress = function () {
-        $scope.addressSave = {notes:[]};
-    };
-
-    //删除地址
-    $scope.deleteAddress=function (addressSave) {
-        if (addressSave.isDefault == 1){
-            $scope.addressList[1].isDefault=1;
-            $scope.updateOrSaveAddress($scope.addressList[1]);
-        }
-        baseService.sendGet("/user/deleteAddress?id="+addressSave.id).then(function (response) {
-            if(response.data==true){
-                $scope.findAddressByUser();
-
-            }else {
-                alert("删除失败!")
-            }
-        })
-    };
-
-    //修改默认地址
+//修改默认地址
     $scope.updateDefaultAddress=function (item) {
         var i =  $scope.addressList[0];
         i.isDefault = "0";
@@ -308,8 +242,5 @@ app.controller('userController', function($scope, $timeout,$interval, baseServic
         item.isDefault ="1";
         // alert(JSON.stringify(item))
         baseService.sendPost("/user/updateAddress",item);
-        location.href="/home-setting-address.html";
-
-    };
-
+    }
 });

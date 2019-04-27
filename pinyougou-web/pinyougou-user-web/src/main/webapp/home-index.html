@@ -156,7 +156,7 @@ $(function(){
                 <div class="yui3-u-1-6 list">
 
                     <div class="person-info">
-                        <div class="person-photo"><img src="img/_/photo.png" alt=""></div>
+                        <div class="person-photo"><img ng-src="{{entity.headPic}}" style="width:40px;height:40px;" alt=""></div>
                         <div class="person-account">
                             <span class="name">{{loginName}}</span>
                             <span class="safe"><a href="/logout">退出登录 </a></span>
@@ -270,7 +270,7 @@ $(function(){
                                     </td>
                                     <td width="10%" class="center" rowspan="{{orderMap.orderItems.length}}" ng-if="orderMap.order.status == 2">
                                         <ul class="unstyled">
-                                            <li><a href="#" class="sui-btn btn-info">确认发货</a></li>
+                                            <li><a href="#" class="sui-btn btn-info">等待发货</a></li>
                                         </ul>
                                     </td>
                                 </tr>
@@ -313,13 +313,10 @@ $(function(){
                                     <ul>
                                         <li class="prev disabled"><a href="#">«上一页</a></li>
                                         <li class="active"><a href="#">1</a></li>
-                                        <li><a href="#">2</a></li>
-                                        <li><a href="#">3</a></li>
-                                        <li class="dotted"><span>...</span></li>
                                         <li class="next"><a href="#">下一页»</a></li>
                                     </ul>
                                     <div>
-                                        <span>共10页&nbsp;</span>
+                                        <span>共1页&nbsp;</span>
                                         <span>
                                             到
                                             <input type="text" class="page-num">

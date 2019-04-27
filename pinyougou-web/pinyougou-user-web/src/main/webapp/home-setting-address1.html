@@ -3,12 +3,19 @@
 <head>
     <meta charset="UTF-8"/>
     <title>设置-个人信息</title>
-	<link rel="icon" href="assets/img/favicon.ico"/>
-	<link rel="stylesheet" type="text/css" href="/css/webbase.css"/>
-	<link rel="stylesheet" type="text/css" href="/css/pages-seckillOrder.css"/>
+    <link rel="icon" href="/assets/img/favicon.ico"/>
+    <link rel="stylesheet" type="text/css" href="/css/webbase.css"/>
+	<link rel="stylesheet" type="text/css" href="css/pages-seckillOrder.css"/>
+
+	<script src="/plugins/angularjs/angular.min.js"></script>
+	<script src="/js/base.js"></script>
+	<script src="/js/service/baseService.js"></script>
+	<script src="/js/controller/indexController.js"></script>
+	<script src="/js/controller/userController.js"></script>
+
 
 </head>
-<body>
+<body ng-app="pinyougou" ng-controller="userController" ng-init="findAddressByUser();">
     <!-- 头部栏位 -->
     <!--页面顶部-->
 <div id="nav-bottom">
@@ -18,7 +25,7 @@
 			<div class="py-container">
 				<div class="shortcut">
 					<ul class="fl">
-						<li class="f-item">{{loginName}},品优购欢迎您！</li>
+						<li class="f-item">品优购欢迎您！</li>
 						<li class="f-item">请<a href="login.html" target="_blank">登录</a>　<span><a href="register.html" target="_blank">免费注册</a></span></li>
 					</ul>
 					<ul class="fr">
@@ -117,6 +124,40 @@
 		</div>
 	</div>
 </div>
+
+<script type="text/javascript" src="/js/plugins/jquery/jquery.min.js"></script>
+
+<script type="text/javascript">
+$(function(){
+	$("#service").hover(function(){
+		$(".service").show();
+	},function(){
+		$(".service").hide();
+	});
+	$("#shopcar").hover(function(){
+		$("#shopcarlist").show();
+	},function(){
+		$("#shopcarlist").hide();
+	});
+
+})
+</script>
+
+<script type="text/javascript" src="/js/plugins/jquery.easing/jquery.easing.min.js"></script>
+
+<script type="text/javascript" src="/js/plugins/sui/sui.min.js"></script>
+
+<script type="text/javascript" src="/js/plugins/jquery-placeholder/jquery.placeholder.min.js"></script>
+
+<script type="text/javascript" src="/js/widget/nav.js"></script>
+
+<script type="text/javascript" src="/pages/userInfo/distpicker.data.js"></script>
+
+<script type="text/javascript" src="/pages/userInfo/distpicker.js"></script>
+
+<script type="text/javascript" src="/pages/userInfo/main.js"></script>
+
+</body>
     <!--header-->
     <div id="account">
         <div class="py-container">
@@ -125,7 +166,7 @@
                 <div class="yui3-u-1-6 list">
 
                     <div class="person-info">
-                        <div class="person-photo"><img ng-src="{{entity.headPic}}" style="width:40px;height:40px;" alt=""></div>
+                        <div class="person-photo"><img src="img/_/photo.png" alt=""></div>
                         <div class="person-account">
                             <span class="name">Michelle</span>
                             <span class="safe">账户安全</span>
@@ -152,88 +193,125 @@
 						<dl>
 							<dt><i>·</i> 设置</dt>
 							<dd><a href="home-setting-info.html" >个人信息</a></dd>
-							<dd><a href="home-setting-address.html" >地址管理</a></dd>
-							<dd><a href="home-setting-safe.html" class="list-active" >安全管理</a></dd>
+							<dd><a href="home-setting-address.html" class="list-active" >地址管理</a></dd>
+							<dd><a href="home-setting-safe.html" >安全管理</a></dd>
 						</dl>
                     </div>
                 </div>
                 <!--右侧主内容-->
                 <div class="yui3-u-5-6">
-                    <div class="body userSafe">
-                        <ul class="sui-nav nav-tabs nav-large nav-primary ">
-                            <li><a href="#one" data-toggle="tab">密码设置</a></li>
-                            <li class="active"><a href="#two" data-toggle="tab">绑定手机</a></li>
-                        </ul>
-                        <div class="tab-content ">
-                            <div id="one" class="tab-pane">
-                                <form class="sui-form form-horizontal sui-validate" id="jsForm">
-                                    <div class="control-group">
-                                        <label for="pwdid" class="control-label">用户名：</label>
-                                        <div class="controls">
-                                            <input id="pwdid" class="fn-tinput" data-rule-remote="http://www.baidu.com" type="password" name="OldPassword" placeholder="输入昵称"
-                                                required data-msg-required="请输入昵称" minlength="6" data-msg-minlength="至少输入6个字符"
-                                            />
-
-                                        </div>
-                                    </div>
-                                    <div class="control-group">
-                                        <label for="inputPassword" class="control-label">密码：</label>
-                                        <div class="controls">
-                                            <input id="inputPassword" class="fn-tinput" type="password" name="password" value="" placeholder="新密码" required id="password" data-rule-remote="php.php">
-                                        </div>
-                                    </div>
-                                    <div class="control-group">
-                                        <label for="inputRepassword" class="control-label">重复密码：</label>
-                                        <div class="controls">
-                                            <input id="inputRepassword" class="fn-tinput" type="password" name="confirm_password" value="" placeholder="确认新密码" required equalTo="#password">
-                                        </div>
-                                    </div>
-
-                                    <div class="control-group">
-                                        <label class="control-label"></label>
-                                        <div class="controls">
-                                            <button type="submit" class="sui-btn btn-primary">提交按钮</button>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                            <div id="two" class="tab-pane active">
-                                <!--步骤条-->
-                                <div class="sui-steps steps-auto">
-                                    <div class="wrap">
-                                        <div class="finished">
-                                        <label><span class="round"><i class="sui-icon icon-pc-right"></i></span><span>第一步 验证身份</span></label><i class="triangle-right-bg"></i><i class="triangle-right"></i>
-                                        </div>
-                                    </div>
-                                    <div class="wrap">
-                                        <div class="finished">
-                                        <label><span class="round"><i class="sui-icon icon-pc-right"></i></span><span>第二步 绑定新手机号</span></label><i class="triangle-right-bg"></i><i class="triangle-right"></i>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="wrap">
-                                        <div class="todo">
-                                        <label><span class="round">3</span><span>第三步 完成</span></label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!--完成-->
-                                <div class="overed">
-                                    <div class="content">
-                                         <div class="img">
-                                             <img src="img/_/right.png" alt="">
-                                        </div>
-                                        <div class="text">
-                                            <p class="success">恭喜你，新手机绑定成功！</p>
-                                            <p class="back"><a href="home-setting-safe.html">返回首页</a></p>
-                                        </div>
-                                    </div>
-                                   
-                                    
-                                </div>
-                                
-                            </div>
+                    <div class="body userAddress">
+                        <div class="address-title">
+                            <span class="title">地址管理</span>
+                            <a data-toggle="modal" data-target=".edit" data-keyboard="false"   class="sui-btn  btn-info add-new">添加新地址</a>
+                            <span class="clearfix"></span>
                         </div>
+                        <div class="address-detail">
+                            <table class="sui-table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>姓名</th>
+                                        <th>地址</th>
+                                        <th>联系电话</th>
+                                        <th>操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="item in addressList">
+                                        <td>{{item.contact}}</td>
+                                        <td>{{item.address}}</td>
+                                        <td>{{item.mobile}}</td>
+                                        <td>
+                                            <a ng-click="showAddress(item);findAddressByParentId();"
+											   href="#" data-toggle="modal" data-target=".edit" data-keyboard="false">编辑</a>
+                                            <a href="#">删除</a>
+                                            <span ng-if="address.id == item.id">默认地址</span>
+                                            <a href="JavaScript:;" ng-if="address.id != item.id">设为默认</a>
+                                        </td>
+                                    </tr>
+
+                                </tbody>
+                            </table>                          
+                        </div>
+                        <!--新增地址弹出层-->
+                         <div  tabindex="-1" role="dialog" data-hasfoot="false" class="sui-modal hide fade edit" style="width:580px;">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" data-dismiss="modal" aria-hidden="true" class="sui-close">×</button>
+                                        <h4 id="myModalLabel" class="modal-title">新增地址</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form action="" class="sui-form form-horizontal">
+                                            <div class="control-group">
+                                            <label class="control-label">收货人：</label>
+                                            <div class="controls"  >
+                                                <input ng-model="addressSave.contact" type="text" class="input-medium">
+                                            </div>
+                                        </div>
+                                        <div class="control-group">
+                                            <label class="control-label">所在地区：</label>
+                                            <div class="controls">
+                                                <div data-toggle="distpicker">
+                                                <div class="form-group area" >
+                                                    <select ng-model="addressSave.provinceId" ng-options="p.provinceId as p.province for p in Provinces" class="form-control" id="province1">
+														<option value="">==请选择省份==</option>
+													</select>
+                                                </div>
+                                                <div class="form-group area">
+                                                    <select ng-model="addressSave.cityId" ng-options="c.cityId as c.city for c in cities" class="form-control" id="city1">
+														<option value="">==请选择城市==</option>
+													</select>
+                                                </div>
+                                                <div class="form-group area">
+                                                    <select ng-model="addressSave.areaId" ng-options="a.areaId as a.area for a in areas" class="form-control" id="district1">
+														<option value="">==请选择区域==</option>
+													</select>
+                                                </div>
+                                            </div>
+                                            </div>									 
+                                        </div>
+                                        <div class="control-group">
+                                            <label class="control-label">详细地址：</label>
+                                            <div class="controls">
+                                                <input ng-model="addressSave.address" type="text" class="input-large">
+                                            </div>
+                                        </div>
+                                        <div class="control-group">
+                                            <label class="control-label">联系电话：</label>
+                                            <div class="controls">
+                                                <input ng-model="addressSave.mobile" type="text" class="input-medium">
+                                            </div>
+                                        </div>
+                                        <div class="control-group">
+                                            <label class="control-label">邮箱：</label>
+                                            <div class="controls">
+                                                <input ng-model="addressSave.notes" type="text" class="input-medium">
+                                            </div>
+                                        </div>
+                                        <div class="control-group">
+                                            <label class="control-label">地址别名：</label>
+                                            <div class="controls">
+                                                <input ng-model="addressSave.alias"  type="text" class="input-medium">
+                                            </div>
+                                            <div class="othername">
+                                                建议填写常用地址：
+												<a ng-click="changeAlias('家里')" href="#" class="sui-btn btn-default">家里</a>　
+												<a ng-click="changeAlias('父母家')" href="#" class="sui-btn btn-default">父母家</a>　
+												<a ng-click="changeAlias('公司')" href="#" class="sui-btn btn-default">公司</a>
+                                            </div>
+                                        </div>
+                                        </form>
+                                        
+                                        
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" data-ok="modal" class="sui-btn btn-primary btn-large">确定</button>
+                                        <button type="button" data-dismiss="modal" class="sui-btn btn-default btn-large">取消</button>
+                                    </div>
+                                </div>
+                            </div>
+						</div>
 
                     </div>
                 </div>
@@ -372,31 +450,5 @@
 		</div>
 	</div>
 </div>
-
-	<script type="text/javascript" src="/js/plugins/jquery/jquery.min.js"></script>
-
-	<script type="text/javascript">
-        $(function(){
-            $("#service").hover(function(){
-                $(".service").show();
-            },function(){
-                $(".service").hide();
-            });
-            $("#shopcar").hover(function(){
-                $("#shopcarlist").show();
-            },function(){
-                $("#shopcarlist").hide();
-            });
-
-        })
-	</script>
-
-	<script type="text/javascript" src="/js/plugins/jquery.easing/jquery.easing.min.js"></script>
-
-	<script type="text/javascript" src="/js/plugins/sui/sui.min.js"></script>
-
-	<script type="text/javascript" src="/js/widget/nav.js"></script>
-
-</body>
 <!--页面底部END-->
 </html>

@@ -3,13 +3,11 @@ package com.pinyougou.user.service.impl;
 import com.alibaba.dubbo.config.annotation.Service;
 import com.alibaba.fastjson.JSON;
 import com.pinyougou.common.util.HttpClientUtils;
+import com.pinyougou.mapper.AddressMapper;
 import com.pinyougou.mapper.AreasMapper;
 import com.pinyougou.mapper.CitiesMapper;
 import com.pinyougou.mapper.UserMapper;
-import com.pinyougou.pojo.Areas;
-import com.pinyougou.pojo.Cities;
-import com.pinyougou.pojo.Provinces;
-import com.pinyougou.pojo.User;
+import com.pinyougou.pojo.*;
 import com.pinyougou.service.UserService;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +36,8 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private AddressMapper addressMapper;
     @Autowired
     private CitiesMapper citiesMapper;
     @Autowired
@@ -250,6 +250,29 @@ public class UserServiceImpl implements UserService {
     public void updatePhone(User user) {
         userMapper.updatePhone(user);
     }
+    @Override
+    public void updateAddress(Address address) {
+        try {
+            addressMapper.updateByPrimaryKey(address);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
+    }
 
+    //保存地址的方法
+    @Override
+    public void saveAddress(Address address) {
+        try {
+            address.setIsDefault("0");
+            address.setCreateDate(new Date());
+            addressMapper.insertSelective(address);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    @Override
+    public void deleteAddress(Long id) {
+        addressMapper.deleteAddress(id);
+    }
 }

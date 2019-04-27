@@ -1,9 +1,6 @@
 package com.pinyougou.service;
 
-import com.pinyougou.pojo.Areas;
-import com.pinyougou.pojo.Cities;
-import com.pinyougou.pojo.Provinces;
-import com.pinyougou.pojo.User;
+import com.pinyougou.pojo.*;
 import java.util.List;
 import java.io.Serializable;
 import java.util.Map;
@@ -67,4 +64,10 @@ public interface UserService {
     Boolean verifyPhone(String remoteUser, String aTrue);
 
     void updatePhone(User user);
+
+    void updateAddress(Address address);
+
+    void saveAddress(Address address);
+
+	void deleteAddress(Long id);
 }
