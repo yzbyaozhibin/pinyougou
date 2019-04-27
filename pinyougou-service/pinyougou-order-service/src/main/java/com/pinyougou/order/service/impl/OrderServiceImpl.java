@@ -6,9 +6,8 @@ import com.pinyougou.common.util.IdWorker;
 import com.pinyougou.mapper.OrderItemMapper;
 import com.pinyougou.mapper.OrderMapper;
 import com.pinyougou.mapper.PayLogMapper;
-import com.pinyougou.pojo.Order;
-import com.pinyougou.pojo.OrderItem;
-import com.pinyougou.pojo.PayLog;
+import com.pinyougou.mapper.SellerMapper;
+import com.pinyougou.pojo.*;
 import com.pinyougou.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -16,8 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.List;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * 订单服务接口实现类
@@ -40,13 +39,15 @@ public class OrderServiceImpl implements OrderService {
     private IdWorker idWorker;
     @Autowired
     private PayLogMapper payLogMapper;
+    @Autowired
+    private SellerMapper sellerMapper;
 
     @Override
     public void save(Order order) {
-        try{
+        try {
 
             // 获取该用户的购物车
-            List<Cart> cartList = (List<Cart>)redisTemplate
+            List<Cart> cartList = (List<Cart>) redisTemplate
                     .boundValueOps("cartOrder_" + order.getUserId()).get();
 
             // 定义支付的总金额
@@ -113,14 +114,14 @@ public class OrderServiceImpl implements OrderService {
             }
 
             // 生成支付日志(多个订单生成一次支付)
-            if ("1".equals(order.getPaymentType())){ // 在线支付
+            if ("1".equals(order.getPaymentType())) { // 在线支付
                 PayLog payLog = new PayLog();
                 // 交易订单号
                 payLog.setOutTradeNo(String.valueOf(idWorker.nextId()));
                 // 创建时间
                 payLog.setCreateTime(new Date());
                 // 支付总金额
-                payLog.setTotalFee((long)(totalMoney * 100));
+                payLog.setTotalFee((long) (totalMoney * 100));
                 // 支付用户
                 payLog.setUserId(order.getUserId());
                 // 交易状态: 未支付
@@ -138,11 +139,46 @@ public class OrderServiceImpl implements OrderService {
             }
 
 
+            // 删除Redis中购物车数据
+            redisTemplate.delete("cartOrder_" + order.getUserId());
+
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+    @Override
+    public void userSave(Order order,Double totalMoney) {
+        try {
+            // 生成支付日志(多个订单生成一次支付)
+            if ("1".equals(order.getPaymentType())) { // 在线支付
+                PayLog payLog = new PayLog();
+                // 交易订单号
+                payLog.setOutTradeNo(String.valueOf(idWorker.nextId()));
+                // 创建时间
+                payLog.setCreateTime(new Date());
+                // 支付总金额
+                payLog.setTotalFee((long) (totalMoney * 100));
+                // 支付用户
+                payLog.setUserId(order.getUserId());
+                // 交易状态: 未支付
+                payLog.setTradeState("0");
+                // 多个订单号，中间用逗号分隔
+                payLog.setOrderList(order.getOrderId()+"");
+                // 支付类型
+                payLog.setPayType(order.getPaymentType());
+
+                // 往支付日志表中插入数据
+                payLogMapper.insertSelective(payLog);
+
+                // 把最新需要支付的日志存入Redis
+                redisTemplate.boundValueOps("payLog_" + order.getUserId()).set(payLog);
+            }
+
 
             // 删除Redis中购物车数据
             redisTemplate.delete("cartOrder_" + order.getUserId());
 
-        }catch (Exception ex){
+        } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
     }
@@ -177,18 +213,22 @@ public class OrderServiceImpl implements OrderService {
         return null;
     }
 
-    /** 从Redis数据库中获取支付日志 */
-    public PayLog findPayLogFromRedis(String userId){
-        try{
-              return (PayLog) redisTemplate.boundValueOps("payLog_" + userId).get();
-        }catch (Exception ex){
+    /**
+     * 从Redis数据库中获取支付日志
+     */
+    public PayLog findPayLogFromRedis(String userId) {
+        try {
+            return (PayLog) redisTemplate.boundValueOps("payLog_" + userId).get();
+        } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
     }
 
-    /** 支付成功，修改支付日志的状态、订单的状态 */
-    public void updatePayStatus(String outTradeNo, String transactionId){
-        try{
+    /**
+     * 支付成功，修改支付日志的状态、订单的状态
+     */
+    public void updatePayStatus(String outTradeNo, String transactionId) {
+        try {
             // 1. 修改支付日志状态
             PayLog payLog = payLogMapper.selectByPrimaryKey(outTradeNo);
             // 支付时间
@@ -217,8 +257,37 @@ public class OrderServiceImpl implements OrderService {
             // 3. 从Redis数据库删除支付日志
             redisTemplate.delete("payLog_" + payLog.getUserId());
 
-        }catch (Exception ex){
+        } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
     }
+
+    public List<Map<String, Object>> findAllOrderByUserId(String userId) {
+        List<Map<String, Object>> maps = new ArrayList<>();
+        List<Order> orders = orderMapper.findAllByUserId(userId);
+        List<Map<String, Object>> maps1 = new ArrayList<>();
+
+
+        for (Order order : orders) {
+
+            Map<String, Object> map = new HashMap<>();
+            map.put("order", order);
+            String sellerName = sellerMapper.findNameById(order.getSellerId());
+            map.put("sellerName", sellerName);
+            List<OrderItem> orderItems = orderItemMapper.findByOrderId(order.getOrderId());
+            map.put("orderItems", orderItems);
+            double totalFee = 0.00;
+            for (OrderItem orderItem : orderItems) {
+                totalFee += orderItem.getTotalFee().doubleValue();
+            }
+            map.put("totalFee", totalFee);
+            map.put("time", new SimpleDateFormat("yyyy-MM-dd HH:mm").format(order.getCreateTime()));
+            map.put("orderId",order.getOrderId()+"");
+            maps.add(map);
+        }
+        return maps;
+    }
+
+
+
 }

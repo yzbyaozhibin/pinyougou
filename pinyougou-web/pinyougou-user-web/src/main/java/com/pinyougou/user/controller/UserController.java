@@ -6,7 +6,6 @@ import com.pinyougou.service.UserService;
 import org.apache.commons.codec.digest.DigestUtils;
 import com.pinyougou.service.*;
 import org.springframework.web.bind.annotation.*;
-import sun.security.provider.MD5;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
@@ -74,8 +73,7 @@ public class UserController {
         try{
             User user = userService.findUserByUsername(username);
             map.put("user",user);
-
-            map.put("birthdayString",new SimpleDateFormat("yyyy-MM-dd").format(user.getBirthday()));
+            map.put("birthdayString",new SimpleDateFormat("yyyy-MM-dd").format(user.getBirthday() == null ? new Date():user.getBirthday()));
             return map;
         }catch (Exception ex){
             ex.printStackTrace();
@@ -220,31 +218,35 @@ public class UserController {
         return false;
     }
 
-    @GetMapping("/checkVerifyPhone")
-    public Boolean checkVerifyPhone(HttpServletRequest request){
-        try {
-            return userService.VerifyPhone(request.getRemoteUser(), "true");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
 
     @GetMapping("/updatePhone")
-    public Boolean updatePhone(String phone,String code,HttpServletRequest request){
+    public Map<String, Object> updatePhone(String phone,String code,HttpServletRequest request){
+        Map<String,Object> map = new HashMap<>();
         try {
+            if (!userService.verifyPhone(request.getRemoteUser(), "true")){
+                map.put("success",false);
+                map.put("message","请先验证手机号");
+                return map;
+            }
             if(userService.checkSmsCode(phone, code)){
                 User user = new User();
                 user.setPhone(phone);
                 user.setUsername(request.getRemoteUser());
                 user.setUpdated(new Date());
                 userService.updatePhone(user);
-                return true;
-            };
+                map.put("success",true);
+                return map;
+            } else {
+                map.put("success",false);
+                map.put("message","短信验证码不正确");
+                return map;
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return false;
+        map.put("success",false);
+        map.put("message","网络出现异常");
+        return map;
     }
 
 
