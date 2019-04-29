@@ -16,13 +16,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * 购物车服务接口实现类
- *
- * @author lee.siu.wah
- * @version 1.0
- * <p>File Created at 2019-04-18<p>
- */
 @Service(interfaceName = "com.pinyougou.service.CartService")
 @Transactional
 public class CartServiceImpl implements CartService {
@@ -32,24 +25,14 @@ public class CartServiceImpl implements CartService {
     @Autowired
     private RedisTemplate redisTemplate;
 
-    /**
-     * 添加SKU商品到购物车
-     * @param carts 购物车集合
-     * @param itemId SKU的id
-     * @param num 购买数量
-     * @return 返回修改后的购物车集合
-     */
     public List<Cart> addItemToCart(List<Cart> carts, Long itemId, Integer num){
         try{
-            // 1. 根据sku的id从tb_item查询商品数据
+
             Item item = itemMapper.selectByPrimaryKey(itemId);
 
-
-            // 2. 根据商家的id从用户的购物车集合中找到对应的商家的购物车
             String sellerId = item.getSellerId();
             Cart cart = searchCartBySellerId(carts, sellerId);
 
-            // 3. 判断用户是否购买过该商家的商品
             if (cart == null){ // 代表没有购买过
                 // 创建商家的购物车
                 cart = new Cart();

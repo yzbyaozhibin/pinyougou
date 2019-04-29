@@ -7,11 +7,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
-/**
- * BrandService 服务接口
- * @date 2019-03-28 09:58:00
- * @version 1.0
- */
+
 public interface BrandService {
 
 	/** 添加方法 */

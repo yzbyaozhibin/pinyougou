@@ -3,11 +3,7 @@ package com.pinyougou.service;
 import com.pinyougou.pojo.Areas;
 import java.util.List;
 import java.io.Serializable;
-/**
- * AreasService 服务接口
- * @date 2019-03-28 09:58:00
- * @version 1.0
- */
+
 public interface AreasService {
 
 	/** 添加方法 */

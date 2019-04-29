@@ -13,8 +13,6 @@ import java.util.List;
  * @version 1.0
  */
 public interface AreasMapper extends Mapper<Areas>{
-
-
     @Select("select * from tb_areas where cityId=#{cityId}")
     List<Areas> findAreasByCityId(String cityId);
 }
